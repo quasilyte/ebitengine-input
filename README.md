@@ -18,6 +18,14 @@ A Godot-inspired action input handling system for [Ebitengine](https://github.co
 go get github.com/quasilyte/ebitengine-input
 ```
 
+A runnable [example](_example/main.go) is available:
+
+```bash
+git clone https://github.com/quasilyte/ebitengine-input.git
+cd ebitengine-input
+go run ./_example/main.go
+```
+
 ### Quick Start
 
 ```go
