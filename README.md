@@ -134,13 +134,13 @@ if h.ActionIsPressed(ActionMoveLeft) {
 }
 ```
 
-Now, what is `h`? It's an [input.Handler](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#Handler).
+Now, what is `h`? It's an [`input.Handler`](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#Handler).
 
 The input handler is bound to some keymap and device ID (only useful for the multi-devices setup with multiple gamepads being connected to the computer).
 
-Having a keymap solves the first issue. The keymap associates an [input.Action](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#Action) with a list of [input.Key](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#Key). This means that the second issue is resolved too. The third issue is covered by the bound device ID.
+Having a keymap solves the first issue. The keymap associates an [`input.Action`](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#Action) with a list of [`input.Key`](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#Key). This means that the second issue is resolved too. The third issue is covered by the bound device ID.
 
-So how do we create an input handler? We use a constructor provided by the [input.System](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#System).
+So how do we create an input handler? We use a constructor provided by the [`input.System`](https://pkg.go.dev/github.com/quasilyte/ebitengine-input#System).
 
 ```go
 // The ID argument is important for devices like gamepads.
