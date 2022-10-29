@@ -6,7 +6,7 @@ A Godot-inspired action input handling system for Ebitengine.
 
 **Key features:**
 
-* Actions paradigm instead of the raw input events
+* [Actions](https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html#actions) paradigm instead of the raw input events
 * Configurable keymaps
 * Bind more than one key to a single action
 * Simplified multi-input handling (like multiple gamepads)
