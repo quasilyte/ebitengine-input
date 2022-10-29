@@ -14,6 +14,13 @@ import (
 	input "github.com/quasilyte/ebiten-input"
 )
 
+// Define our list of actions as enum-like constants.
+//
+// Actions usually have more than one key associated with them.
+// A key could be a keyboard key, a gamepad key, a mouse button, etc.
+//
+// When you want to check whether the player is pressing the "fire" key,
+// instead of checking the left mouse button directly, you check whether ActionFire is active.
 const (
 	ActionUnknown input.Action = iota
 	ActionMoveLeft
@@ -44,11 +51,44 @@ type exampleGame struct {
 func newExampleGame() *exampleGame {
 	g := &exampleGame{}
 
+	// The System.Init() should be called exactly once.
 	g.inputSystem.Init(input.SystemConfig{
 		DevicesEnabled: input.AnyInput,
 	})
 
 	return g
+}
+
+func (g *exampleGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return 640, 480
+}
+
+func (g *exampleGame) Draw(screen *ebiten.Image) {
+	ebitenutil.DebugPrint(screen, g.message)
+	for _, p := range g.players {
+		p.Draw(screen)
+	}
+}
+
+func (g *exampleGame) Update() error {
+	g.inputSystem.Update()
+
+	if !g.started {
+		g.Init()
+		g.started = true
+	}
+
+	// Treat the first input handler as the main one.
+	// Only the first player can exit the game.
+	if g.inputHandlers[0].ActionIsJustPressed(ActionExit) {
+		os.Exit(0)
+	}
+
+	for _, p := range g.players {
+		p.Update()
+	}
+
+	return nil
 }
 
 func (g *exampleGame) Init() {
@@ -111,38 +151,6 @@ func (g *exampleGame) Init() {
 		"move right: " + strings.Join(g.inputHandlers[0].ActionKeyNames(ActionMoveRight, inputDevice), " or "),
 	}
 	g.message = strings.Join(messageLines, "\n")
-}
-
-func (g *exampleGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return 640, 480
-}
-
-func (g *exampleGame) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, g.message)
-	for _, p := range g.players {
-		p.Draw(screen)
-	}
-}
-
-func (g *exampleGame) Update() error {
-	g.inputSystem.Update()
-
-	if !g.started {
-		g.Init()
-		g.started = true
-	}
-
-	// Treat the first input handler as the main one.
-	// Only the first player can exit the game.
-	if g.inputHandlers[0].ActionIsJustPressed(ActionExit) {
-		os.Exit(0)
-	}
-
-	for _, p := range g.players {
-		p.Update()
-	}
-
-	return nil
 }
 
 type player struct {
