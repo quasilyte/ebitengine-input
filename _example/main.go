@@ -11,7 +11,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	input "github.com/quasilyte/ebiten-input"
+	input "github.com/quasilyte/ebitengine-input"
 )
 
 // Define our list of actions as enum-like constants.
