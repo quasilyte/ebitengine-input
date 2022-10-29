@@ -106,7 +106,7 @@ func (p *player) Draw(screen *ebiten.Image) {
 }
 ```
 
-### An introduction
+### Introduction
 
 Let's assume that we have a simple game where you can move a character left or right.
 
