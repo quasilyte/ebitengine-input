@@ -1,0 +1,169 @@
+//go:build example
+
+package main
+
+import (
+	"fmt"
+	"image"
+	"log"
+	"os"
+	"strings"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	input "github.com/quasilyte/ebiten-input"
+)
+
+const (
+	ActionUnknown input.Action = iota
+	ActionMoveLeft
+	ActionMoveRight
+	ActionExit
+	ActionTeleport
+)
+
+func main() {
+	ebiten.SetWindowSize(640, 480)
+
+	if err := ebiten.RunGame(newExampleGame()); err != nil {
+		log.Fatal(err)
+	}
+}
+
+type exampleGame struct {
+	started bool
+
+	players []*player
+
+	message string
+
+	inputHandlers []*input.Handler
+	inputSystem   input.System
+}
+
+func newExampleGame() *exampleGame {
+	g := &exampleGame{}
+
+	g.inputSystem.Init(input.SystemConfig{
+		DevicesEnabled: input.AnyInput,
+	})
+
+	return g
+}
+
+func (g *exampleGame) Init() {
+	// We're hardcoding the keymap here, but it could be read from the config file.
+	keymap := input.Keymap{
+		// Every action can have a list of keys that can activate it.
+		// KeyGamepadLStick<Direction> implements a D-pad like events for L/R sticks.
+		ActionMoveLeft:  {input.KeyGamepadLeft, input.KeyGamepadLStickLeft, input.KeyLeft, input.KeyA},
+		ActionMoveRight: {input.KeyGamepadRight, input.KeyGamepadLStickRight, input.KeyRight, input.KeyD},
+		ActionExit:      {input.KeyGamepadStart, input.KeyEscape},
+	}
+
+	// Player 1 will have a teleport ability activated by a mouse click or a touch screen tap.
+	keymap0 := keymap.Clone()
+	keymap0[ActionTeleport] = []input.Key{input.KeyMouseLeft, input.KeyTouchTap}
+
+	// Prepare the input handlers for all possible player slots.
+	numGamepads := 0
+	g.inputHandlers = make([]*input.Handler, 4)
+	for i := range g.inputHandlers {
+		m := keymap
+		if i == 0 {
+			m = keymap0
+		}
+		h := g.inputSystem.NewHandler(i, m)
+		if h.GamepadConnected() {
+			numGamepads++
+		}
+		g.inputHandlers[i] = h
+	}
+
+	// There can be only one player with keyboard.
+	// There can be up to 4 players with gamepads.
+	numPlayers := 1
+	inputDevice := input.KeyboardInput
+	if numGamepads != 0 {
+		inputDevice = input.GamepadInput
+		numPlayers = numGamepads
+	}
+
+	// Depending on the actual number of players, create
+	// player objects and give them associated input handlers.
+	g.players = make([]*player, numPlayers)
+	pos := image.Point{X: 256, Y: 128}
+	for i := range g.players {
+		g.players[i] = &player{
+			input: g.inputHandlers[i],
+			pos:   pos,
+			label: fmt.Sprintf("[player%d]", i+1),
+		}
+		pos.Y += 64
+	}
+
+	// For the real-world games you will want to map these action key names to
+	// something more human-readable (you may also want to translate them).
+	// For simplicity, we'll use them here as is.
+	messageLines := []string{
+		"preferred input: " + inputDevice.String(),
+		"move left: " + strings.Join(g.inputHandlers[0].ActionKeyNames(ActionMoveLeft, inputDevice), " or "),
+		"move right: " + strings.Join(g.inputHandlers[0].ActionKeyNames(ActionMoveRight, inputDevice), " or "),
+	}
+	g.message = strings.Join(messageLines, "\n")
+}
+
+func (g *exampleGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return 640, 480
+}
+
+func (g *exampleGame) Draw(screen *ebiten.Image) {
+	ebitenutil.DebugPrint(screen, g.message)
+	for _, p := range g.players {
+		p.Draw(screen)
+	}
+}
+
+func (g *exampleGame) Update() error {
+	g.inputSystem.Update()
+
+	if !g.started {
+		g.Init()
+		g.started = true
+	}
+
+	// Treat the first input handler as the main one.
+	// Only the first player can exit the game.
+	if g.inputHandlers[0].ActionIsJustPressed(ActionExit) {
+		os.Exit(0)
+	}
+
+	for _, p := range g.players {
+		p.Update()
+	}
+
+	return nil
+}
+
+type player struct {
+	label string
+	input *input.Handler
+	pos   image.Point
+}
+
+func (p *player) Update() {
+	if p.input.ActionIsPressed(ActionMoveLeft) {
+		p.pos.X -= 4
+	}
+	if p.input.ActionIsPressed(ActionMoveRight) {
+		p.pos.X += 4
+	}
+	if info, ok := p.input.JustPressedActionInfo(ActionTeleport); ok {
+		p.pos.X = int(info.Pos.X)
+		p.pos.Y = int(info.Pos.Y)
+	}
+}
+
+func (p *player) Draw(screen *ebiten.Image) {
+	ebitenutil.DebugPrintAt(screen, p.label, p.pos.X, p.pos.Y)
+}
