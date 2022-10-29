@@ -2,7 +2,7 @@ package input
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/quasilyte/ebiten-input/keyname"
+	"github.com/quasilyte/ebitengine-input/keyname"
 )
 
 // Key represents an input method that can be used to activate Action.
