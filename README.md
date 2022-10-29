@@ -106,7 +106,7 @@ You might end up checking the specific key events in your code like this:
 
 ```go
 if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-    // Move left.
+    // Move left
 }
 ```
 
@@ -130,7 +130,7 @@ Then we change the keypress handling code to this:
 
 ```go
 if h.ActionIsPressed(ActionMoveLeft) {
-    // Move left.
+    // Move left
 }
 ```
 
