@@ -2,7 +2,7 @@
 
 ### Overview
 
-A Godot-inspired action input handling system for Ebitengine.
+A Godot-inspired action input handling system for [Ebitengine](https://github.com/hajimehoshi/ebiten).
 
 **Key features:**
 
