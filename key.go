@@ -2,7 +2,6 @@ package input
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/quasilyte/ebitengine-input/keyname"
 )
 
 // Key represents an input method that can be used to activate Action.
@@ -17,96 +16,94 @@ type Key struct {
 
 // Mouse keys.
 var (
-	KeyMouseLeft   = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouse, name: keyname.MouseLeft}
-	KeyMouseRight  = Key{code: int(ebiten.MouseButtonRight), kind: keyMouse, name: keyname.MouseRight}
-	KeyMouseMiddle = Key{code: int(ebiten.MouseButtonMiddle), kind: keyMouse, name: keyname.MouseMiddle}
+	KeyMouseLeft   = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouse, name: "mouse_left_button"}
+	KeyMouseRight  = Key{code: int(ebiten.MouseButtonRight), kind: keyMouse, name: "mouse_right_button"}
+	KeyMouseMiddle = Key{code: int(ebiten.MouseButtonMiddle), kind: keyMouse, name: "mouse_middle_button"}
 )
 
 // Touch keys.
 var (
-	KeyTouchTap = Key{code: int(touchTap), kind: keyTouch, name: keyname.ScreenTap}
+	KeyTouchTap = Key{code: int(touchTap), kind: keyTouch, name: "screen_tap"}
 )
 
 // Keyboard keys.
 var (
-	KeyLeft  Key = Key{code: int(ebiten.KeyLeft), name: keyname.KeyboardLeft}
-	KeyRight Key = Key{code: int(ebiten.KeyRight), name: keyname.KeyboardRight}
-	KeyUp    Key = Key{code: int(ebiten.KeyUp), name: keyname.KeyboardUp}
-	KeyDown  Key = Key{code: int(ebiten.KeyDown), name: keyname.KeyboardDown}
+	KeyLeft  Key = Key{code: int(ebiten.KeyLeft), name: "left"}
+	KeyRight Key = Key{code: int(ebiten.KeyRight), name: "right"}
+	KeyUp    Key = Key{code: int(ebiten.KeyUp), name: "up"}
+	KeyDown  Key = Key{code: int(ebiten.KeyDown), name: "down"}
 
-	KeyTab Key = Key{code: int(ebiten.KeyTab), name: keyname.KeyboardTab}
+	Key0 Key = Key{code: int(ebiten.Key0), name: "0"}
+	Key1 Key = Key{code: int(ebiten.Key1), name: "1"}
+	Key2 Key = Key{code: int(ebiten.Key2), name: "2"}
+	Key3 Key = Key{code: int(ebiten.Key3), name: "3"}
+	Key4 Key = Key{code: int(ebiten.Key4), name: "4"}
+	Key5 Key = Key{code: int(ebiten.Key5), name: "5"}
+	Key6 Key = Key{code: int(ebiten.Key6), name: "6"}
+	Key7 Key = Key{code: int(ebiten.Key7), name: "7"}
+	Key8 Key = Key{code: int(ebiten.Key8), name: "8"}
+	Key9 Key = Key{code: int(ebiten.Key9), name: "9"}
 
-	Key0 Key = Key{code: int(ebiten.Key0), name: keyname.Keyboard0}
-	Key1 Key = Key{code: int(ebiten.Key1), name: keyname.Keyboard1}
-	Key2 Key = Key{code: int(ebiten.Key2), name: keyname.Keyboard2}
-	Key3 Key = Key{code: int(ebiten.Key3), name: keyname.Keyboard3}
-	Key4 Key = Key{code: int(ebiten.Key4), name: keyname.Keyboard4}
-	Key5 Key = Key{code: int(ebiten.Key5), name: keyname.Keyboard5}
-	Key6 Key = Key{code: int(ebiten.Key6), name: keyname.Keyboard6}
-	Key7 Key = Key{code: int(ebiten.Key7), name: keyname.Keyboard7}
-	Key8 Key = Key{code: int(ebiten.Key8), name: keyname.Keyboard8}
-	Key9 Key = Key{code: int(ebiten.Key9), name: keyname.Keyboard9}
+	KeyQ Key = Key{code: int(ebiten.KeyQ), name: "q"}
+	KeyW Key = Key{code: int(ebiten.KeyW), name: "w"}
+	KeyE Key = Key{code: int(ebiten.KeyE), name: "e"}
+	KeyR Key = Key{code: int(ebiten.KeyR), name: "r"}
+	KeyT Key = Key{code: int(ebiten.KeyT), name: "t"}
+	KeyY Key = Key{code: int(ebiten.KeyY), name: "y"}
+	KeyU Key = Key{code: int(ebiten.KeyY), name: "u"}
+	KeyI Key = Key{code: int(ebiten.KeyY), name: "i"}
+	KeyO Key = Key{code: int(ebiten.KeyY), name: "o"}
+	KeyP Key = Key{code: int(ebiten.KeyY), name: "p"}
+	KeyA Key = Key{code: int(ebiten.KeyA), name: "a"}
+	KeyS Key = Key{code: int(ebiten.KeyS), name: "s"}
+	KeyD Key = Key{code: int(ebiten.KeyD), name: "d"}
+	KeyF Key = Key{code: int(ebiten.KeyD), name: "f"}
+	KeyG Key = Key{code: int(ebiten.KeyD), name: "g"}
+	KeyH Key = Key{code: int(ebiten.KeyD), name: "h"}
+	KeyJ Key = Key{code: int(ebiten.KeyD), name: "j"}
+	KeyK Key = Key{code: int(ebiten.KeyD), name: "k"}
+	KeyL Key = Key{code: int(ebiten.KeyD), name: "l"}
+	KeyZ Key = Key{code: int(ebiten.KeyD), name: "z"}
+	KeyX Key = Key{code: int(ebiten.KeyD), name: "x"}
+	KeyC Key = Key{code: int(ebiten.KeyD), name: "c"}
+	KeyV Key = Key{code: int(ebiten.KeyD), name: "v"}
+	KeyB Key = Key{code: int(ebiten.KeyD), name: "b"}
+	KeyN Key = Key{code: int(ebiten.KeyD), name: "n"}
+	KeyM Key = Key{code: int(ebiten.KeyD), name: "m"}
 
-	KeyQ Key = Key{code: int(ebiten.KeyQ), name: keyname.KeyboardQ}
-	KeyW Key = Key{code: int(ebiten.KeyW), name: keyname.KeyboardW}
-	KeyE Key = Key{code: int(ebiten.KeyE), name: keyname.KeyboardE}
-	KeyR Key = Key{code: int(ebiten.KeyR), name: keyname.KeyboardR}
-	KeyT Key = Key{code: int(ebiten.KeyT), name: keyname.KeyboardT}
-	KeyY Key = Key{code: int(ebiten.KeyY), name: keyname.KeyboardY}
-	KeyU Key = Key{code: int(ebiten.KeyY), name: keyname.KeyboardU}
-	KeyI Key = Key{code: int(ebiten.KeyY), name: keyname.KeyboardI}
-	KeyO Key = Key{code: int(ebiten.KeyY), name: keyname.KeyboardO}
-	KeyP Key = Key{code: int(ebiten.KeyY), name: keyname.KeyboardP}
-	KeyA Key = Key{code: int(ebiten.KeyA), name: keyname.KeyboardA}
-	KeyS Key = Key{code: int(ebiten.KeyS), name: keyname.KeyboardS}
-	KeyD Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardD}
-	KeyF Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardF}
-	KeyG Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardG}
-	KeyH Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardH}
-	KeyJ Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardJ}
-	KeyK Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardK}
-	KeyL Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardL}
-	KeyZ Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardZ}
-	KeyX Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardX}
-	KeyC Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardC}
-	KeyV Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardV}
-	KeyB Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardB}
-	KeyN Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardN}
-	KeyM Key = Key{code: int(ebiten.KeyD), name: keyname.KeyboardM}
-
-	KeyEscape Key = Key{code: int(ebiten.KeyEscape), name: keyname.KeyboardEscape}
-	KeyEnter  Key = Key{code: int(ebiten.KeyEnter), name: keyname.KeyboardEnter}
-
-	KeySpace Key = Key{code: int(ebiten.KeySpace), name: keyname.KeyboardSpace}
+	KeyEscape Key = Key{code: int(ebiten.KeyEscape), name: "escape"}
+	KeyEnter  Key = Key{code: int(ebiten.KeyEnter), name: "enter"}
+	KeyTab    Key = Key{code: int(ebiten.KeyTab), name: "tab"}
+	KeySpace  Key = Key{code: int(ebiten.KeySpace), name: "space"}
 )
 
 // Gamepad keys.
 var (
-	KeyGamepadStart  Key = Key{code: int(ebiten.StandardGamepadButtonCenterRight), kind: keyGamepad, name: keyname.GamepadStart}
-	KeyGamepadSelect Key = Key{code: int(ebiten.StandardGamepadButtonCenterLeft), kind: keyGamepad, name: keyname.GamepadSelect}
-	KeyGamepadMiddle Key = Key{code: int(ebiten.StandardGamepadButtonCenterCenter), kind: keyGamepad, name: keyname.GamepadMiddle}
+	KeyGamepadStart  Key = Key{code: int(ebiten.StandardGamepadButtonCenterRight), kind: keyGamepad, name: "gamepad_start"}
+	KeyGamepadSelect Key = Key{code: int(ebiten.StandardGamepadButtonCenterLeft), kind: keyGamepad, name: "gamepad_select"}
+	KeyGamepadMiddle Key = Key{code: int(ebiten.StandardGamepadButtonCenterCenter), kind: keyGamepad, name: "gamepad_middle"}
 
-	KeyGamepadUp    Key = Key{code: int(ebiten.StandardGamepadButtonLeftTop), kind: keyGamepad, name: keyname.GamepadUp}
-	KeyGamepadRight Key = Key{code: int(ebiten.StandardGamepadButtonLeftRight), kind: keyGamepad, name: keyname.GamepadRight}
-	KeyGamepadDown  Key = Key{code: int(ebiten.StandardGamepadButtonLeftBottom), kind: keyGamepad, name: keyname.GamepadDown}
-	KeyGamepadLeft  Key = Key{code: int(ebiten.StandardGamepadButtonLeftLeft), kind: keyGamepad, name: keyname.GamepadLeft}
+	KeyGamepadUp    Key = Key{code: int(ebiten.StandardGamepadButtonLeftTop), kind: keyGamepad, name: "gamepad_up"}
+	KeyGamepadRight Key = Key{code: int(ebiten.StandardGamepadButtonLeftRight), kind: keyGamepad, name: "gamepad_right"}
+	KeyGamepadDown  Key = Key{code: int(ebiten.StandardGamepadButtonLeftBottom), kind: keyGamepad, name: "gamepad_down"}
+	KeyGamepadLeft  Key = Key{code: int(ebiten.StandardGamepadButtonLeftLeft), kind: keyGamepad, name: "gamepad_left"}
 
-	KeyGamepadLStickUp    = Key{code: int(stickUp), kind: keyGamepadLeftStick, name: keyname.GamepadLStickUp}
-	KeyGamepadLStickRight = Key{code: int(stickRight), kind: keyGamepadLeftStick, name: keyname.GamepadLStickRight}
-	KeyGamepadLStickDown  = Key{code: int(stickDown), kind: keyGamepadLeftStick, name: keyname.GamepadLStickDown}
-	KeyGamepadLStickLeft  = Key{code: int(stickLeft), kind: keyGamepadLeftStick, name: keyname.GamepadLStickLeft}
-	KeyGamepadRStickUp    = Key{code: int(stickUp), kind: keyGamepadRightStick, name: keyname.GamepadRStickUp}
-	KeyGamepadRStickRight = Key{code: int(stickRight), kind: keyGamepadRightStick, name: keyname.GamepadRStickRight}
-	KeyGamepadRStickDown  = Key{code: int(stickDown), kind: keyGamepadRightStick, name: keyname.GamepadRStickDown}
-	KeyGamepadRStickLeft  = Key{code: int(stickLeft), kind: keyGamepadRightStick, name: keyname.GamepadRStickLeft}
+	KeyGamepadLStickUp    = Key{code: int(stickUp), kind: keyGamepadLeftStick, name: "gamepad_lstick_up"}
+	KeyGamepadLStickRight = Key{code: int(stickRight), kind: keyGamepadLeftStick, name: "gamepad_lstick_right"}
+	KeyGamepadLStickDown  = Key{code: int(stickDown), kind: keyGamepadLeftStick, name: "gamepad_lstick_down"}
+	KeyGamepadLStickLeft  = Key{code: int(stickLeft), kind: keyGamepadLeftStick, name: "gamepad_lstick_left"}
+	KeyGamepadRStickUp    = Key{code: int(stickUp), kind: keyGamepadRightStick, name: "gamepad_rstick_up"}
+	KeyGamepadRStickRight = Key{code: int(stickRight), kind: keyGamepadRightStick, name: "gamepad_rstick_right"}
+	KeyGamepadRStickDown  = Key{code: int(stickDown), kind: keyGamepadRightStick, name: "gamepad_rstick_down"}
+	KeyGamepadRStickLeft  = Key{code: int(stickLeft), kind: keyGamepadRightStick, name: "gamepad_rstick_left"}
 
-	KeyGamepadA Key = Key{code: int(ebiten.StandardGamepadButtonRightBottom), kind: keyGamepad, name: keyname.GamepadA}
-	KeyGamepadB Key = Key{code: int(ebiten.StandardGamepadButtonRightRight), kind: keyGamepad, name: keyname.GamepadB}
-	KeyGamepadX Key = Key{code: int(ebiten.StandardGamepadButtonRightLeft), kind: keyGamepad, name: keyname.GamepadX}
-	KeyGamepadY Key = Key{code: int(ebiten.StandardGamepadButtonRightTop), kind: keyGamepad, name: keyname.GamepadY}
+	KeyGamepadA Key = Key{code: int(ebiten.StandardGamepadButtonRightBottom), kind: keyGamepad, name: "gamepad_a"}
+	KeyGamepadB Key = Key{code: int(ebiten.StandardGamepadButtonRightRight), kind: keyGamepad, name: "gamepad_b"}
+	KeyGamepadX Key = Key{code: int(ebiten.StandardGamepadButtonRightLeft), kind: keyGamepad, name: "gamepad_x"}
+	KeyGamepadY Key = Key{code: int(ebiten.StandardGamepadButtonRightTop), kind: keyGamepad, name: "gamepad_y"}
 
-	KeyGamepadL1 Key = Key{code: int(ebiten.StandardGamepadButtonFrontTopLeft), kind: keyGamepad, name: keyname.GamepadL1}
-	KeyGamepadL2 Key = Key{code: int(ebiten.StandardGamepadButtonFrontBottomLeft), kind: keyGamepad, name: keyname.GamepadL2}
-	KeyGamepadR1 Key = Key{code: int(ebiten.StandardGamepadButtonFrontTopRight), kind: keyGamepad, name: keyname.GamepadR1}
-	KeyGamepadR2 Key = Key{code: int(ebiten.StandardGamepadButtonFrontBottomRight), kind: keyGamepad, name: keyname.GamepadR2}
+	KeyGamepadL1 Key = Key{code: int(ebiten.StandardGamepadButtonFrontTopLeft), kind: keyGamepad, name: "gamepad_l1"}
+	KeyGamepadL2 Key = Key{code: int(ebiten.StandardGamepadButtonFrontBottomLeft), kind: keyGamepad, name: "gamepad_l2"}
+	KeyGamepadR1 Key = Key{code: int(ebiten.StandardGamepadButtonFrontTopRight), kind: keyGamepad, name: "gamepad_r1"}
+	KeyGamepadR2 Key = Key{code: int(ebiten.StandardGamepadButtonFrontBottomRight), kind: keyGamepad, name: "gamepad_r2"}
 )
