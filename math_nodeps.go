@@ -1,3 +1,5 @@
+//go:build !gmath
+
 package input
 
 import (
@@ -11,19 +13,24 @@ import (
 // This means that we'll have to implement some math here,
 // but it's worth it.
 
-func vecDot(v, v2 Point) float64 {
+type Vec struct {
+	X float64
+	Y float64
+}
+
+func vecDot(v, v2 Vec) float64 {
 	return (v.X * v2.X) + (v.Y * v2.Y)
 }
 
-func vecLenSquared(v Point) float64 {
+func vecLenSquared(v Vec) float64 {
 	return vecDot(v, v)
 }
 
-func vecLen(v Point) float64 {
+func vecLen(v Vec) float64 {
 	return math.Sqrt(vecLenSquared(v))
 }
 
-func vecAngle(v Point) float64 {
+func vecAngle(v Vec) float64 {
 	return math.Atan2(v.Y, v.X)
 }
 

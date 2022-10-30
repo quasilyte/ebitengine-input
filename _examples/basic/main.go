@@ -14,6 +14,11 @@ import (
 	input "github.com/quasilyte/ebitengine-input"
 )
 
+// Note: this example won't work well in browsers (wasm builds)
+// due to the fact that browsers don't "connect" the gamepads until
+// the user presses any button.
+// See _examples/gamepad_in_browser for an example that works around it.
+
 // Define our list of actions as enum-like constants.
 //
 // Actions usually have more than one key associated with them.

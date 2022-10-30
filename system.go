@@ -29,10 +29,10 @@ type System struct {
 	touchIDs     []ebiten.TouchID
 	touchTapID   ebiten.TouchID
 	touchHasTap  bool
-	touchTapPos  Point
+	touchTapPos  Vec
 
 	mouseEnabled bool
-	cursorPos    Point
+	cursorPos    Vec
 }
 
 // SystemConfig configures the input system.
@@ -60,15 +60,19 @@ func (sys *System) Update() {
 	if len(sys.gamepadIDs) != 0 {
 		for i, id := range sys.gamepadIDs {
 			info := &sys.gamepadInfo[i]
+			info.axisCount = ebiten.GamepadAxisCount(id)
 			modelName := ebiten.GamepadName(id)
 			if info.modelName != modelName {
 				info.modelName = modelName
 				if ebiten.IsStandardGamepadLayoutAvailable(id) {
 					info.model = gamepadStandard
+				} else if isFirefox() {
+					info.model = guessFirefoxGamepadModel(int(id))
 				} else {
 					info.model = guessGamepadModel(modelName)
 				}
 			}
+			sys.updateGamepadInfo(id, info)
 		}
 	}
 
@@ -84,7 +88,7 @@ func (sys *System) Update() {
 			sys.touchIDs = inpututil.AppendJustPressedTouchIDs(sys.touchIDs)
 			for _, id := range sys.touchIDs {
 				x, y := ebiten.TouchPosition(id)
-				sys.touchTapPos = Point{X: float64(x), Y: float64(y)}
+				sys.touchTapPos = Vec{X: float64(x), Y: float64(y)}
 				sys.touchTapID = id
 				break
 			}
@@ -93,7 +97,35 @@ func (sys *System) Update() {
 
 	if sys.mouseEnabled {
 		x, y := ebiten.CursorPosition()
-		sys.cursorPos = Point{X: float64(x), Y: float64(y)}
+		sys.cursorPos = Vec{X: float64(x), Y: float64(y)}
+	}
+}
+
+func (sys *System) updateGamepadInfo(id ebiten.GamepadID, info *gamepadInfo) {
+	switch info.model {
+	case gamepadStandard:
+		copy(info.prevAxisValues[:], info.axisValues[:])
+		for axis := ebiten.StandardGamepadAxisLeftStickHorizontal; axis < ebiten.StandardGamepadAxisMax; axis++ {
+			v := ebiten.StandardGamepadAxisValue(id, axis)
+			info.axisValues[int(axis)] = v
+		}
+	case gamepadFirefoxXinput:
+		copy(info.prevAxisValues[:], info.axisValues[:])
+		for axis := 0; axis < info.axisCount; axis++ {
+			axisKey := axis
+			switch ebiten.StandardGamepadAxis(axis) {
+			case ebiten.StandardGamepadAxisLeftStickHorizontal:
+				axisKey = 0
+			case ebiten.StandardGamepadAxisLeftStickVertical:
+				axisKey = 1
+			case ebiten.StandardGamepadAxisRightStickHorizontal:
+				axisKey = 3
+			case ebiten.StandardGamepadAxisRightStickVertical:
+				axisKey = 4
+			}
+			v := ebiten.GamepadAxisValue(id, axisKey)
+			info.axisValues[axis] = v
+		}
 	}
 }
 

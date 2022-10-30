@@ -65,6 +65,7 @@ const (
 const (
 	GamepadStart  = "gamepad_start"
 	GamepadSelect = "gamepad_select"
+	GamepadMiddle = "gamepad_middle"
 
 	GamepadUp    = "gamepad_up"
 	GamepadRight = "gamepad_right"

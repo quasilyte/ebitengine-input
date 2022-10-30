@@ -33,7 +33,7 @@ type EventInfo struct {
 	kind   keyKind
 	hasPos bool
 
-	Pos Point
+	Pos Vec
 }
 
 // HasPos reports whether this event has a position associated with it.
@@ -80,12 +80,12 @@ func (h *Handler) TouchEventsEnabled() bool {
 
 // TapPos is like CursorPos(), but for the screen tapping.
 // If there is no screen tapping in this frame, it returns false.
-func (h *Handler) TapPos() (Point, bool) {
+func (h *Handler) TapPos() (Vec, bool) {
 	return h.sys.touchTapPos, h.sys.touchHasTap
 }
 
 // CursorPos returns the current mouse cursor position on the screen.
-func (h *Handler) CursorPos() Point {
+func (h *Handler) CursorPos() Vec {
 	return h.sys.cursorPos
 }
 
@@ -214,10 +214,11 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 		}
 		return false
 	case keyGamepad:
-		if h.gamepadInfo().model == gamepadStandard {
-			return inpututil.IsStandardGamepadButtonJustPressed(ebiten.GamepadID(h.id), ebiten.StandardGamepadButton(k.code))
-		}
-		return inpututil.IsGamepadButtonJustPressed(ebiten.GamepadID(h.id), h.mappedGamepadKey(k.code))
+		return h.gamepadKeyIsJustPressed(k)
+	case keyGamepadLeftStick:
+		return h.gamepadStickIsJustPressed(stickCode(k.code), ebiten.StandardGamepadAxisLeftStickHorizontal, ebiten.StandardGamepadAxisLeftStickVertical)
+	case keyGamepadRightStick:
+		return h.gamepadStickIsJustPressed(stickCode(k.code), ebiten.StandardGamepadAxisRightStickHorizontal, ebiten.StandardGamepadAxisRightStickVertical)
 	case keyMouse:
 		return inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
 	default:
@@ -228,10 +229,7 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 func (h *Handler) keyIsPressed(k Key) bool {
 	switch k.kind {
 	case keyGamepad:
-		if h.gamepadInfo().model == gamepadStandard {
-			return ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(h.id), ebiten.StandardGamepadButton(k.code))
-		}
-		return ebiten.IsGamepadButtonPressed(ebiten.GamepadID(h.id), h.mappedGamepadKey(k.code))
+		return h.gamepadKeyIsPressed(k)
 	case keyGamepadLeftStick:
 		return h.gamepadStickIsPressed(stickCode(k.code), ebiten.StandardGamepadAxisLeftStickHorizontal, ebiten.StandardGamepadAxisLeftStickVertical)
 	case keyGamepadRightStick:
@@ -243,47 +241,84 @@ func (h *Handler) keyIsPressed(k Key) bool {
 	}
 }
 
-func (h *Handler) gamepadStickIsPressed(code stickCode, axis1, axis2 ebiten.StandardGamepadAxis) bool {
-	if h.gamepadInfo().model == gamepadStandard {
-		switch stickCode(code) {
-		case stickUp:
-			vec := h.leftStickVec(axis1, axis2)
-			if vecLen(vec) < 0.5 {
-				return false
-			}
-
-			angle := angleNormalized(vecAngle(vec))
-			return angle > (math.Pi+math.Pi/4) && angle <= (2*math.Pi-math.Pi/4)
-		case stickRight:
-			vec := h.leftStickVec(axis1, axis2)
-			if vecLen(vec) < 0.5 {
-				return false
-			}
-			angle := angleNormalized(vecAngle(vec))
-			return angle <= (math.Pi/4) || angle > (2*math.Pi-math.Pi/4)
-		case stickDown:
-			vec := h.leftStickVec(axis1, axis2)
-			if vecLen(vec) < 0.5 {
-				return false
-			}
-			angle := angleNormalized(vecAngle(vec))
-			return angle > (math.Pi/4) && angle <= (math.Pi-math.Pi/4)
-		case stickLeft:
-			vec := h.leftStickVec(axis1, axis2)
-			if vecLen(vec) < 0.5 {
-				return false
-			}
-			angle := angleNormalized(vecAngle(vec))
-			return angle > (math.Pi-math.Pi/4) && angle <= (math.Pi+math.Pi/4)
-		}
+func (h *Handler) isDPadAxisActive(code int, vec Vec) bool {
+	switch ebiten.StandardGamepadButton(code) {
+	case ebiten.StandardGamepadButtonLeftTop:
+		return vec.Y == -1
+	case ebiten.StandardGamepadButtonLeftRight:
+		return vec.X == 1
+	case ebiten.StandardGamepadButtonLeftBottom:
+		return vec.Y == 1
+	case ebiten.StandardGamepadButtonLeftLeft:
+		return vec.X == -1
 	}
-	return false // TODO: handle non-standard gamepads
+	return false
 }
 
-func (h *Handler) leftStickVec(axis1, axis2 ebiten.StandardGamepadAxis) Point {
-	x := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(h.id), axis1)
-	y := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(h.id), axis2)
-	return Point{X: x, Y: y}
+func (h *Handler) gamepadKeyIsJustPressed(k Key) bool {
+	if h.gamepadInfo().model == gamepadStandard {
+		return inpututil.IsStandardGamepadButtonJustPressed(ebiten.GamepadID(h.id), ebiten.StandardGamepadButton(k.code))
+	}
+	if h.gamepadInfo().model == gamepadFirefoxXinput && isDPadButton(k.code) {
+		return !h.isDPadAxisActive(k.code, h.getStickPrevVec(6, 7)) &&
+			h.isDPadAxisActive(k.code, h.getStickVec(6, 7))
+	}
+	return inpututil.IsGamepadButtonJustPressed(ebiten.GamepadID(h.id), h.mappedGamepadKey(k.code))
+}
+
+func (h *Handler) gamepadKeyIsPressed(k Key) bool {
+	if h.gamepadInfo().model == gamepadStandard {
+		return ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(h.id), ebiten.StandardGamepadButton(k.code))
+	}
+	if h.gamepadInfo().model == gamepadFirefoxXinput && isDPadButton(k.code) {
+		return h.isDPadAxisActive(k.code, h.getStickVec(6, 7))
+	}
+	return ebiten.IsGamepadButtonPressed(ebiten.GamepadID(h.id), h.mappedGamepadKey(k.code))
+}
+
+func (h *Handler) gamepadStickIsActive(code stickCode, vec Vec) bool {
+	if vecLen(vec) < 0.5 {
+		return false
+	}
+	switch code {
+	case stickUp:
+		angle := angleNormalized(vecAngle(vec))
+		return angle > (math.Pi+math.Pi/4) && angle <= (2*math.Pi-math.Pi/4)
+	case stickRight:
+		angle := angleNormalized(vecAngle(vec))
+		return angle <= (math.Pi/4) || angle > (2*math.Pi-math.Pi/4)
+	case stickDown:
+		angle := angleNormalized(vecAngle(vec))
+		return angle > (math.Pi/4) && angle <= (math.Pi-math.Pi/4)
+	case stickLeft:
+		angle := angleNormalized(vecAngle(vec))
+		return angle > (math.Pi-math.Pi/4) && angle <= (math.Pi+math.Pi/4)
+	}
+	return false
+}
+
+func (h *Handler) gamepadStickIsJustPressed(code stickCode, axis1, axis2 ebiten.StandardGamepadAxis) bool {
+	return !h.gamepadStickIsActive(code, h.getStickPrevVec(axis1, axis2)) &&
+		h.gamepadStickIsActive(code, h.getStickVec(int(axis1), int(axis2)))
+}
+
+func (h *Handler) gamepadStickIsPressed(code stickCode, axis1, axis2 ebiten.StandardGamepadAxis) bool {
+	vec := h.getStickVec(int(axis1), int(axis2))
+	return h.gamepadStickIsActive(code, vec)
+}
+
+func (h *Handler) getStickPrevVec(axis1, axis2 ebiten.StandardGamepadAxis) Vec {
+	return Vec{
+		X: h.gamepadInfo().prevAxisValues[axis1],
+		Y: h.gamepadInfo().prevAxisValues[axis2],
+	}
+}
+
+func (h *Handler) getStickVec(axis1, axis2 int) Vec {
+	return Vec{
+		X: h.gamepadInfo().axisValues[axis1],
+		Y: h.gamepadInfo().axisValues[axis2],
+	}
 }
 
 func (h *Handler) gamepadInfo() *gamepadInfo {
@@ -295,6 +330,8 @@ func (h *Handler) mappedGamepadKey(keyCode int) ebiten.GamepadButton {
 	switch h.gamepadInfo().model {
 	case gamepadMicront:
 		return microntToXbox(b)
+	case gamepadFirefoxXinput:
+		return ebiten.GamepadButton(b)
 	default:
 		return ebiten.GamepadButton(keyCode)
 	}

@@ -11,6 +11,7 @@ type gamepadModel int
 const (
 	gamepadUnknown gamepadModel = iota
 	gamepadStandard
+	gamepadFirefoxXinput
 	gamepadMicront
 )
 
@@ -25,6 +26,25 @@ func guessGamepadModel(s string) gamepadModel {
 type gamepadInfo struct {
 	model     gamepadModel
 	modelName string
+
+	axisCount      int
+	axisValues     [8]float64
+	prevAxisValues [8]float64
+}
+
+func isDPadButton(code int) bool {
+	switch ebiten.StandardGamepadButton(code) {
+	case ebiten.StandardGamepadButtonLeftTop:
+		return true
+	case ebiten.StandardGamepadButtonLeftRight:
+		return true
+	case ebiten.StandardGamepadButtonLeftBottom:
+		return true
+	case ebiten.StandardGamepadButtonLeftLeft:
+		return true
+	default:
+		return false
+	}
 }
 
 func microntToXbox(b ebiten.StandardGamepadButton) ebiten.GamepadButton {

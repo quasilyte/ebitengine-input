@@ -11,6 +11,8 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 * Bind more than one key to a single action
 * Simplified multi-input handling (like multiple gamepads)
 * No extra dependencies (apart from the [Ebitengine](https://github.com/hajimehoshi/ebiten) of course)
+* Solves some issues related to gamepads in browsers
+* Can be used without extra deps or with [gmath](https://github.com/quasilyte/gmath) integration
 
 ### Installation
 
@@ -18,12 +20,12 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 go get github.com/quasilyte/ebitengine-input
 ```
 
-A runnable [example](_example/main.go) is available:
+A runnable [example](_examples/basic/main.go) is available:
 
 ```bash
 git clone https://github.com/quasilyte/ebitengine-input.git
 cd ebitengine-input
-go run ./_example/main.go
+go run ./_examples/basic/main.go
 ```
 
 ### Quick Start
@@ -221,4 +223,4 @@ keyNames := h.ActionKeyNames(ActionMoveLeft, h.DefaultInputMask())
 
 If the gamepad is connected, the `keyNames` will be `["gamepad_left"]`. Otherwise it will contain two entries for our example: `["left", "a"]`.
 
-See an [example](_example/main.go) for a complete source code.
+See an [example](_examples/basic/main.go) for a complete source code.
