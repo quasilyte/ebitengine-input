@@ -47,6 +47,17 @@ func isDPadButton(code int) bool {
 	}
 }
 
+func firefoxXinputToXbox(b ebiten.StandardGamepadButton) ebiten.GamepadButton {
+	switch b {
+	case ebiten.StandardGamepadButtonCenterLeft:
+		return 6
+	case ebiten.StandardGamepadButtonCenterRight:
+		return 7
+	default:
+		return ebiten.GamepadButton(b)
+	}
+}
+
 func microntToXbox(b ebiten.StandardGamepadButton) ebiten.GamepadButton {
 	switch b {
 	case ebiten.StandardGamepadButtonLeftTop:

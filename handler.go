@@ -331,7 +331,7 @@ func (h *Handler) mappedGamepadKey(keyCode int) ebiten.GamepadButton {
 	case gamepadMicront:
 		return microntToXbox(b)
 	case gamepadFirefoxXinput:
-		return ebiten.GamepadButton(b)
+		return firefoxXinputToXbox(b)
 	default:
 		return ebiten.GamepadButton(keyCode)
 	}
