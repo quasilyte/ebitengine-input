@@ -71,10 +71,11 @@ var (
 	KeyN Key = Key{code: int(ebiten.KeyD), name: "n"}
 	KeyM Key = Key{code: int(ebiten.KeyD), name: "m"}
 
-	KeyEscape Key = Key{code: int(ebiten.KeyEscape), name: "escape"}
-	KeyEnter  Key = Key{code: int(ebiten.KeyEnter), name: "enter"}
-	KeyTab    Key = Key{code: int(ebiten.KeyTab), name: "tab"}
-	KeySpace  Key = Key{code: int(ebiten.KeySpace), name: "space"}
+	KeyEscape    Key = Key{code: int(ebiten.KeyEscape), name: "escape"}
+	KeyEnter     Key = Key{code: int(ebiten.KeyEnter), name: "enter"}
+	KeyBackspace Key = Key{code: int(ebiten.KeyBackspace), name: "backspace"}
+	KeyTab       Key = Key{code: int(ebiten.KeyTab), name: "tab"}
+	KeySpace     Key = Key{code: int(ebiten.KeySpace), name: "space"}
 )
 
 // Gamepad keys.
