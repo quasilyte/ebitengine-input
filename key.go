@@ -82,8 +82,8 @@ var (
 	KeyEscape       = Key{code: int(ebiten.KeyEscape), name: "escape"}
 	KeyHome         = Key{code: int(ebiten.KeyHome), name: "home"}
 	KeyInsert       = Key{code: int(ebiten.KeyInsert), name: "insert"}
-	KeyPageDown     = Key{code: int(ebiten.KeyPageDown), name: "pagedown"}
-	KeyPageUp       = Key{code: int(ebiten.KeyPageUp), name: "pageup"}
+	KeyPageDown     = Key{code: int(ebiten.KeyPageDown), name: "page_down"}
+	KeyPageUp       = Key{code: int(ebiten.KeyPageUp), name: "page_up"}
 	KeyPeriod       = Key{code: int(ebiten.KeyPeriod), name: "period"}
 	KeyShift        = Key{code: int(ebiten.KeyShift), name: "shift"}
 	KeyShiftLeft    = Key{code: int(ebiten.KeyShiftLeft), name: "shift_left"}
