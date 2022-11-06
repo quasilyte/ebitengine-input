@@ -71,11 +71,44 @@ var (
 	KeyN = Key{code: int(ebiten.KeyD), name: "n"}
 	KeyM = Key{code: int(ebiten.KeyD), name: "m"}
 
-	KeyEscape    = Key{code: int(ebiten.KeyEscape), name: "escape"}
-	KeyEnter     = Key{code: int(ebiten.KeyEnter), name: "enter"}
-	KeyBackspace = Key{code: int(ebiten.KeyBackspace), name: "backspace"}
-	KeyTab       = Key{code: int(ebiten.KeyTab), name: "tab"}
-	KeySpace     = Key{code: int(ebiten.KeySpace), name: "space"}
+	KeyBackspace    = Key{code: int(ebiten.KeyBackspace), name: "backspace"}
+	KeyComma        = Key{code: int(ebiten.KeyComma), name: "comma"}
+	KeyControl      = Key{code: int(ebiten.KeyControl), name: "control"}
+	KeyControlLeft  = Key{code: int(ebiten.KeyControlLeft), name: "control_left"}
+	KeyControlRight = Key{code: int(ebiten.KeyControlRight), name: "control_right"}
+	KeyDelete       = Key{code: int(ebiten.KeyDelete), name: "delete"}
+	KeyEnd          = Key{code: int(ebiten.KeyEnd), name: "end"}
+	KeyEnter        = Key{code: int(ebiten.KeyEnter), name: "enter"}
+	KeyEscape       = Key{code: int(ebiten.KeyEscape), name: "escape"}
+	KeyHome         = Key{code: int(ebiten.KeyHome), name: "home"}
+	KeyInsert       = Key{code: int(ebiten.KeyInsert), name: "insert"}
+	KeyPageDown     = Key{code: int(ebiten.KeyPageDown), name: "pagedown"}
+	KeyPageUp       = Key{code: int(ebiten.KeyPageUp), name: "pageup"}
+	KeyPeriod       = Key{code: int(ebiten.KeyPeriod), name: "period"}
+	KeyShift        = Key{code: int(ebiten.KeyShift), name: "shift"}
+	KeyShiftLeft    = Key{code: int(ebiten.KeyShiftLeft), name: "shift_left"}
+	KeyShiftRight   = Key{code: int(ebiten.KeyShiftRight), name: "shift_right"}
+	KeySlash        = Key{code: int(ebiten.KeySlash), name: "slash"}
+	KeySpace        = Key{code: int(ebiten.KeySpace), name: "space"}
+	KeyTab          = Key{code: int(ebiten.KeyTab), name: "tab"}
+
+	KeyNum0 = Key{code: int(ebiten.KeyNumpad0), name: "numpad_0"}
+	KeyNum1 = Key{code: int(ebiten.KeyNumpad1), name: "numpad_1"}
+	KeyNum2 = Key{code: int(ebiten.KeyNumpad2), name: "numpad_2"}
+	KeyNum3 = Key{code: int(ebiten.KeyNumpad3), name: "numpad_3"}
+	KeyNum4 = Key{code: int(ebiten.KeyNumpad4), name: "numpad_4"}
+	KeyNum5 = Key{code: int(ebiten.KeyNumpad5), name: "numpad_5"}
+	KeyNum6 = Key{code: int(ebiten.KeyNumpad6), name: "numpad_6"}
+	KeyNum7 = Key{code: int(ebiten.KeyNumpad7), name: "numpad_7"}
+	KeyNum8 = Key{code: int(ebiten.KeyNumpad8), name: "numpad_8"}
+	KeyNum9 = Key{code: int(ebiten.KeyNumpad9), name: "numpad_9"}
+
+	KeyNumAdd      = Key{code: int(ebiten.KeyNumpadAdd), name: "numpad_add"}
+	KeyNumDivide   = Key{code: int(ebiten.KeyNumpadDivide), name: "numpad_divide"}
+	KeyNumEnter    = Key{code: int(ebiten.KeyNumpadEnter), name: "numpad_enter"}
+	KeyNumMultiply = Key{code: int(ebiten.KeyNumpadMultiply), name: "numpad_multiply"}
+	KeyNumPeriod   = Key{code: int(ebiten.KeyNumpadDecimal), name: "numpad_period"}
+	KeyNumSubtract = Key{code: int(ebiten.KeyNumpadSubtract), name: "numpad_subtract"}
 )
 
 // Gamepad keys.
