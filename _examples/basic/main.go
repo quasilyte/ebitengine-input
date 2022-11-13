@@ -28,6 +28,7 @@ import (
 // instead of checking the left mouse button directly, you check whether ActionFire is active.
 const (
 	ActionUnknown input.Action = iota
+	ActionDebug
 	ActionMoveLeft
 	ActionMoveRight
 	ActionExit
@@ -88,6 +89,9 @@ func (g *exampleGame) Update() error {
 	if g.inputHandlers[0].ActionIsJustPressed(ActionExit) {
 		os.Exit(0)
 	}
+	if g.inputHandlers[0].ActionIsJustPressed(ActionDebug) {
+		fmt.Println("debug action is pressed")
+	}
 
 	for _, p := range g.players {
 		p.Update()
@@ -103,7 +107,12 @@ func (g *exampleGame) Init() {
 		// KeyGamepadLStick<Direction> implements a D-pad like events for L/R sticks.
 		ActionMoveLeft:  {input.KeyGamepadLeft, input.KeyGamepadLStickLeft, input.KeyLeft, input.KeyA},
 		ActionMoveRight: {input.KeyGamepadRight, input.KeyGamepadLStickRight, input.KeyRight, input.KeyD},
-		ActionExit:      {input.KeyGamepadStart, input.KeyEscape},
+		ActionExit: {
+			input.KeyGamepadStart,
+			input.KeyEscape,
+			input.KeyWithModifier(input.KeyC, input.ModControl),
+		},
+		ActionDebug: {input.KeyControlLeft},
 	}
 
 	// Player 1 will have a teleport ability activated by a mouse click or a touch screen tap.

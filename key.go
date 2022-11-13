@@ -14,6 +14,33 @@ type Key struct {
 	name string
 }
 
+type KeyModifier uint8
+
+const (
+	ModControl KeyModifier = iota
+	ModShift
+)
+
+// KeyWithModifier turns k into a combined modifier+k key.
+// For instance, KeyUp+ModControl will trigger an action
+// only if both of these keys are being pressed.
+func KeyWithModifier(k Key, mod KeyModifier) Key {
+	switch k.kind {
+	case keyKeyboard:
+		switch mod {
+		case ModControl:
+			k.kind = keyKeyboardWithCtrl
+		case ModShift:
+			k.kind = keyKeyboardWithShift
+		default:
+			panic("unexpected key modifier")
+		}
+	default:
+		panic("only keyboard keys support modifiers")
+	}
+	return k
+}
+
 // Mouse keys.
 var (
 	KeyMouseLeft   = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouse, name: "mouse_left_button"}

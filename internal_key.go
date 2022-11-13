@@ -4,6 +4,8 @@ type keyKind uint8
 
 const (
 	keyKeyboard keyKind = iota
+	keyKeyboardWithCtrl
+	keyKeyboardWithShift
 	keyGamepad
 	keyGamepadLeftStick
 	keyGamepadRightStick

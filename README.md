@@ -9,6 +9,7 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 * [Actions](https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html#actions) paradigm instead of the raw input events
 * Configurable keymaps
 * Bind more than one key to a single action
+* Bind keys with modifiers to a single action (like `ctrl+c`)
 * Simplified multi-input handling (like multiple gamepads)
 * No extra dependencies (apart from the [Ebitengine](https://github.com/hajimehoshi/ebiten) of course)
 * Solves some issues related to gamepads in browsers
@@ -222,5 +223,12 @@ keyNames := h.ActionKeyNames(ActionMoveLeft, h.DefaultInputMask())
 ```
 
 If the gamepad is connected, the `keyNames` will be `["gamepad_left"]`. Otherwise it will contain two entries for our example: `["left", "a"]`.
+
+To build a combined key like `ctrl+c`, use `KeyWithModifier` function:
+
+```go
+// trigger an action when c is pressed while ctrl is down
+input.KeyWithModifier(input.KeyC, input.ModControl)
+```
 
 See an [example](_examples/basic/main.go) for a complete source code.
