@@ -71,7 +71,7 @@ var (
 	Key8     = Key{code: int(ebiten.Key8), name: "8"}
 	Key9     = Key{code: int(ebiten.Key9), name: "9"}
 	KeyMinus = Key{code: int(ebiten.KeyMinus), name: "minus"}
-	KeyPlus  = Key{code: int(ebiten.KeyEqual), name: "equal"}
+	KeyEqual = Key{code: int(ebiten.KeyEqual), name: "equal"}
 
 	KeyBackquote = Key{code: int(ebiten.KeyBackquote), name: "backquote"}
 
