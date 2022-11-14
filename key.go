@@ -60,16 +60,20 @@ var (
 	KeyUp    = Key{code: int(ebiten.KeyUp), name: "up"}
 	KeyDown  = Key{code: int(ebiten.KeyDown), name: "down"}
 
-	Key0 = Key{code: int(ebiten.Key0), name: "0"}
-	Key1 = Key{code: int(ebiten.Key1), name: "1"}
-	Key2 = Key{code: int(ebiten.Key2), name: "2"}
-	Key3 = Key{code: int(ebiten.Key3), name: "3"}
-	Key4 = Key{code: int(ebiten.Key4), name: "4"}
-	Key5 = Key{code: int(ebiten.Key5), name: "5"}
-	Key6 = Key{code: int(ebiten.Key6), name: "6"}
-	Key7 = Key{code: int(ebiten.Key7), name: "7"}
-	Key8 = Key{code: int(ebiten.Key8), name: "8"}
-	Key9 = Key{code: int(ebiten.Key9), name: "9"}
+	Key0     = Key{code: int(ebiten.Key0), name: "0"}
+	Key1     = Key{code: int(ebiten.Key1), name: "1"}
+	Key2     = Key{code: int(ebiten.Key2), name: "2"}
+	Key3     = Key{code: int(ebiten.Key3), name: "3"}
+	Key4     = Key{code: int(ebiten.Key4), name: "4"}
+	Key5     = Key{code: int(ebiten.Key5), name: "5"}
+	Key6     = Key{code: int(ebiten.Key6), name: "6"}
+	Key7     = Key{code: int(ebiten.Key7), name: "7"}
+	Key8     = Key{code: int(ebiten.Key8), name: "8"}
+	Key9     = Key{code: int(ebiten.Key9), name: "9"}
+	KeyMinus = Key{code: int(ebiten.KeyMinus), name: "minus"}
+	KeyPlus  = Key{code: int(ebiten.KeyEqual), name: "equal"}
+
+	KeyBackquote = Key{code: int(ebiten.KeyBackquote), name: "backquote"}
 
 	KeyQ = Key{code: int(ebiten.KeyQ), name: "q"}
 	KeyW = Key{code: int(ebiten.KeyW), name: "w"}
