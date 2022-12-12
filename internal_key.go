@@ -10,6 +10,8 @@ const (
 	keyGamepadLeftStick
 	keyGamepadRightStick
 	keyMouse
+	keyMouseWithCtrl
+	keyMouseWithShift
 	keyTouch
 )
 

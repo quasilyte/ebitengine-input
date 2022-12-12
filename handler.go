@@ -221,6 +221,12 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 		return h.gamepadStickIsJustPressed(stickCode(k.code), ebiten.StandardGamepadAxisRightStickHorizontal, ebiten.StandardGamepadAxisRightStickVertical)
 	case keyMouse:
 		return inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
+	case keyMouseWithCtrl:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
+	case keyMouseWithShift:
+		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
 	case keyKeyboardWithCtrl:
 		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
 			inpututil.IsKeyJustPressed(ebiten.Key(k.code))
@@ -242,6 +248,12 @@ func (h *Handler) keyIsPressed(k Key) bool {
 		return h.gamepadStickIsPressed(stickCode(k.code), ebiten.StandardGamepadAxisRightStickHorizontal, ebiten.StandardGamepadAxisRightStickVertical)
 	case keyMouse:
 		return ebiten.IsMouseButtonPressed(ebiten.MouseButton(k.code))
+	case keyMouseWithCtrl:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			ebiten.IsMouseButtonPressed(ebiten.MouseButton(k.code))
+	case keyMouseWithShift:
+		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			ebiten.IsMouseButtonPressed(ebiten.MouseButton(k.code))
 	case keyKeyboardWithCtrl:
 		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
 			ebiten.IsKeyPressed(ebiten.Key(k.code))
