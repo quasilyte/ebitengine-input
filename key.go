@@ -50,6 +50,13 @@ func KeyWithModifier(k Key, mod KeyModifier) Key {
 	return k
 }
 
+// Wheel keys.
+var (
+	KeyWheelUp       = Key{code: int(wheelUp), kind: keyWheel, name: "wheel_up"}
+	KeyWheelDown     = Key{code: int(wheelDown), kind: keyWheel, name: "wheel_down"}
+	KeyWheelVertical = Key{code: int(wheelVertical), kind: keyWheel, name: "wheel_vertical"}
+)
+
 // Mouse keys.
 var (
 	KeyMouseLeft   = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouse, name: "mouse_left_button"}

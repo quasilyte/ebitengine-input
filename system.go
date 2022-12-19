@@ -33,6 +33,7 @@ type System struct {
 
 	mouseEnabled bool
 	cursorPos    Vec
+	wheel        Vec
 }
 
 // SystemConfig configures the input system.
@@ -98,6 +99,11 @@ func (sys *System) Update() {
 	if sys.mouseEnabled {
 		x, y := ebiten.CursorPosition()
 		sys.cursorPos = Vec{X: float64(x), Y: float64(y)}
+	}
+
+	if sys.mouseEnabled || sys.touchEnabled {
+		x, y := ebiten.Wheel()
+		sys.wheel = Vec{X: x, Y: y}
 	}
 }
 

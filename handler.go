@@ -169,6 +169,10 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 			info.Pos = h.sys.touchTapPos
 			info.hasPos = true
 			return info, true
+		case keyWheel:
+			info.Pos = h.sys.wheel
+			info.hasPos = true
+			return info, true
 		}
 	}
 	return info, isPressed
@@ -233,6 +237,8 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 	case keyKeyboardWithShift:
 		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
 			inpututil.IsKeyJustPressed(ebiten.Key(k.code))
+	case keyWheel:
+		return h.wheelIsJustPressed(wheelCode(k.code))
 	default:
 		return inpututil.IsKeyJustPressed(ebiten.Key(k.code))
 	}
@@ -277,6 +283,19 @@ func (h *Handler) isDPadAxisActive(code int, vec Vec) bool {
 		return vec.X == -1
 	}
 	return false
+}
+
+func (h *Handler) wheelIsJustPressed(code wheelCode) bool {
+	switch code {
+	case wheelDown:
+		return h.sys.wheel.Y > 0
+	case wheelUp:
+		return h.sys.wheel.Y < 0
+	case wheelVertical:
+		return h.sys.wheel.Y != 0
+	default:
+		return false
+	}
 }
 
 func (h *Handler) gamepadKeyIsJustPressed(k Key) bool {

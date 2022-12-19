@@ -13,6 +13,7 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 * Simplified multi-input handling (like multiple gamepads)
 * No extra dependencies (apart from the [Ebitengine](https://github.com/hajimehoshi/ebiten) of course)
 * Solves some issues related to gamepads in browsers
+* Wheel/scroll as action events
 * Can be used without extra deps or with [gmath](https://github.com/quasilyte/gmath) integration
 
 ### Installation
