@@ -6,12 +6,14 @@ const (
 	keyKeyboard keyKind = iota
 	keyKeyboardWithCtrl
 	keyKeyboardWithShift
+	keyKeyboardWithCtrlShift
 	keyGamepad
 	keyGamepadLeftStick
 	keyGamepadRightStick
 	keyMouse
 	keyMouseWithCtrl
 	keyMouseWithShift
+	keyMouseWithCtrlShift
 	keyTouch
 	keyWheel
 )

@@ -161,7 +161,7 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 		isPressed = true
 		info.kind = k.kind
 		switch k.kind {
-		case keyMouse:
+		case keyMouse, keyMouseWithCtrl, keyMouseWithShift, keyMouseWithCtrlShift:
 			info.Pos = h.sys.cursorPos
 			info.hasPos = true
 			return info, true
@@ -231,11 +231,19 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 	case keyMouseWithShift:
 		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
 			inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
+	case keyMouseWithCtrlShift:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
 	case keyKeyboardWithCtrl:
 		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
 			inpututil.IsKeyJustPressed(ebiten.Key(k.code))
 	case keyKeyboardWithShift:
 		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			inpututil.IsKeyJustPressed(ebiten.Key(k.code))
+	case keyKeyboardWithCtrlShift:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			ebiten.IsKeyPressed(ebiten.KeyShift) &&
 			inpututil.IsKeyJustPressed(ebiten.Key(k.code))
 	case keyWheel:
 		return h.wheelIsJustPressed(wheelCode(k.code))
