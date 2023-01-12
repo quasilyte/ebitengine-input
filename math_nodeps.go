@@ -13,6 +13,14 @@ import (
 // This means that we'll have to implement some math here,
 // but it's worth it.
 
+// Vec is a simple wrapper around a pair of float64 coordinates.
+//
+// Since most games use float values for most values, input library
+// converts int pair to the float pair once per Update() call so
+// all usages inside the frame can use already converted values.
+//
+// We're not using some vector2d library to avoid extra dependencies.
+// It should be easy to convert this Point object into any other structure.
 type Vec struct {
 	X float64
 	Y float64

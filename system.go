@@ -145,7 +145,3 @@ func (sys *System) NewHandler(playerID int, keymap Keymap) *Handler {
 		sys:    sys,
 	}
 }
-
-func (sys *System) NewMultiHandler() *MultiHandler {
-	return &MultiHandler{}
-}
