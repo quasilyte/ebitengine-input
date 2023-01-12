@@ -1,5 +1,7 @@
 ## Ebitengine input library
 
+[![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/quasilyte/ebitengine-input)](https://pkg.go.dev/mod/github.com/quasilyte/ebitengine-input)
+
 ### Overview
 
 A [Godot](https://godotengine.org/)-inspired action input handling system for [Ebitengine](https://github.com/hajimehoshi/ebiten).
