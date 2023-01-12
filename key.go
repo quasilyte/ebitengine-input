@@ -4,6 +4,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+//go:generate go run ./_scripts/gen_key_list -o internal_key_list.go key.go
+
 // Key represents an input method that can be used to activate Action.
 // Key could be a keyboard key, a gamepad key, a mouse button, etc.
 //
@@ -17,7 +19,8 @@ type Key struct {
 type KeyModifier uint8
 
 const (
-	ModControl KeyModifier = iota
+	ModUnknown KeyModifier = iota
+	ModControl
 	ModShift
 	ModControlShift
 )
