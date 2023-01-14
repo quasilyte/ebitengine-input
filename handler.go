@@ -95,17 +95,17 @@ func (h *Handler) CursorPos() Vec {
 // Otherwise it returns KeyboardInput+MouseInput mask.
 // This is good enough for the simplest games, but you may to implement this
 // logic inside your game if you need something more complicated.
-func (h *Handler) DefaultInputMask() InputDeviceKind {
+func (h *Handler) DefaultInputMask() DeviceKind {
 	if h.GamepadConnected() {
-		return GamepadInput
+		return GamepadDevice
 	}
-	return KeyboardInput | MouseInput
+	return KeyboardDevice | MouseDevice
 }
 
 // ActionKeyNames returns a list of key names associated by this action.
 //
 // It filters the results by a given input device mask.
-// If you want to include all input device keys, use AnyInput value.
+// If you want to include all input device keys, use AnyDevice value.
 //
 // This function is useful when you want to display a list of keys
 // the player should press in order to activate some action.
@@ -115,7 +115,7 @@ func (h *Handler) DefaultInputMask() InputDeviceKind {
 // show keyboard options listed. For the simple cases, you can use
 // DefaultInputMask() method to get the mask that will try to avoid
 // that situation. See its comment to learn more.
-func (h *Handler) ActionKeyNames(action Action, mask InputDeviceKind) []string {
+func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 	keys, ok := h.keymap[action]
 	if !ok {
 		return nil
@@ -126,13 +126,13 @@ func (h *Handler) ActionKeyNames(action Action, mask InputDeviceKind) []string {
 		enabled := true
 		switch k.kind {
 		case keyKeyboard:
-			enabled = mask&KeyboardInput != 0
+			enabled = mask&KeyboardDevice != 0
 		case keyMouse:
-			enabled = mask&MouseInput != 0
+			enabled = mask&MouseDevice != 0
 		case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick:
-			enabled = gamepadConnected && (mask&GamepadInput != 0)
+			enabled = gamepadConnected && (mask&GamepadDevice != 0)
 		case keyTouch:
-			enabled = h.sys.touchEnabled && (mask&TouchInput != 0)
+			enabled = h.sys.touchEnabled && (mask&TouchDevice != 0)
 		}
 		if enabled {
 			result = append(result, k.name)

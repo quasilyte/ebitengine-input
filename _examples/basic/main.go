@@ -59,7 +59,7 @@ func newExampleGame() *exampleGame {
 
 	// The System.Init() should be called exactly once.
 	g.inputSystem.Init(input.SystemConfig{
-		DevicesEnabled: input.AnyInput,
+		DevicesEnabled: input.AnyDevice,
 	})
 
 	return g

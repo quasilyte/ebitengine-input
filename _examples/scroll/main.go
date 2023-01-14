@@ -36,7 +36,7 @@ func newExampleGame() *exampleGame {
 	g := &exampleGame{}
 
 	g.inputSystem.Init(input.SystemConfig{
-		DevicesEnabled: input.AnyInput,
+		DevicesEnabled: input.AnyDevice,
 	})
 
 	return g
