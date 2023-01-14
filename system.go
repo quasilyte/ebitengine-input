@@ -11,9 +11,9 @@ import (
 //
 // Store System object (by value) inside your game context/state object like this:
 //
-//    struct GameState {
-//        InputSystem input.System
-//    }
+//	struct GameState {
+//	    InputSystem input.System
+//	}
 //
 // When ebitengine game is executed, call gameState.InputSystem.Init() once.
 //
