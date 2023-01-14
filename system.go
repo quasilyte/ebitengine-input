@@ -25,6 +25,10 @@ type System struct {
 	gamepadIDs  []ebiten.GamepadID
 	gamepadInfo []gamepadInfo
 
+	pendingEvents       []SimulatedEvent
+	prevSimulatedEvents []SimulatedEvent
+	simulatedEvents     []SimulatedEvent
+
 	touchEnabled bool
 	touchIDs     []ebiten.TouchID
 	touchTapID   ebiten.TouchID
@@ -57,6 +61,16 @@ func (sys *System) Init(config SystemConfig) {
 }
 
 func (sys *System) Update() {
+	// Rotate the events slices.
+	// Pending events become simulated in this frame.
+	// Re-use the other slice capacity to push new events.
+	//	prev simulated <- simulated
+	//	pending <- prev simulated
+	//	simulated <- pending
+	sys.prevSimulatedEvents, sys.pendingEvents, sys.simulatedEvents =
+		sys.simulatedEvents, sys.prevSimulatedEvents, sys.pendingEvents
+	sys.pendingEvents = sys.pendingEvents[:0]
+
 	sys.gamepadIDs = ebiten.AppendGamepadIDs(sys.gamepadIDs[:0])
 	if len(sys.gamepadIDs) != 0 {
 		for i, id := range sys.gamepadIDs {
