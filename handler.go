@@ -22,43 +22,6 @@ type Handler struct {
 	sys    *System
 }
 
-// EventInfo holds extra information about the input device event.
-//
-// Pos carries the event location, if available.
-// Pos is a click location for mouse events.
-// Pos is a tap location for screen touch events.
-// Use HasPos() predicate to know whether there is a pos associated
-// with the event to distinguish between (0, 0) pos and lack of pos info.
-type EventInfo struct {
-	kind   keyKind
-	hasPos bool
-
-	Pos Vec
-}
-
-// HasPos reports whether this event has a position associated with it.
-// Use Pos field to get the pos value.
-func (e EventInfo) HasPos() bool { return e.hasPos }
-
-// IsTouchEvent reports whether this event was triggered by a screen touch device.
-func (e EventInfo) IsTouchEvent() bool { return e.kind == keyTouch }
-
-// IsKeyboardEvent reports whether this event was triggered by a keyboard device.
-func (e EventInfo) IsKeyboardEvent() bool { return e.kind == keyKeyboard }
-
-// IsMouseEvent reports whether this event was triggered by a mouse device.
-func (e EventInfo) IsMouseEvent() bool { return e.kind == keyMouse }
-
-// IsGamepadEvent reports whether this event was triggered by a gamepad device.
-func (e EventInfo) IsGamepadEvent() bool {
-	switch e.kind {
-	case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick:
-		return true
-	default:
-		return false
-	}
-}
-
 // GamepadConnected reports whether the gamepad associated with this handler is connected.
 // The gamepad ID is the handler ID used during the handler creation.
 //
@@ -100,6 +63,16 @@ func (h *Handler) DefaultInputMask() DeviceKind {
 		return GamepadDevice
 	}
 	return KeyboardDevice | MouseDevice
+}
+
+// EmitEvent sends given key event into the input system.
+//
+// The event is emitted from the perspective of this handler,
+// so the gamepad events will be handled properly in the multi-device context.
+//
+// Experimental: this is a part of virtual input API, which is not stable yet.
+func (h *Handler) EmitEvent(e SimulatedEvent) {
+	h.sys.pendingEvents = append(h.sys.pendingEvents, e)
 }
 
 // ActionKeyNames returns a list of key names associated by this action.
@@ -155,23 +128,24 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 	}
 	isPressed := false
 	for _, k := range keys {
+		if info, status := h.justPressedSimulatedKeyInfo(k); status == bool3true {
+			return info, true
+		}
 		if !h.keyIsJustPressed(k) {
 			continue
 		}
 		isPressed = true
 		info.kind = k.kind
+		info.hasPos = keysWithPos[k.kind]
 		switch k.kind {
 		case keyMouse, keyMouseWithCtrl, keyMouseWithShift, keyMouseWithCtrlShift:
 			info.Pos = h.sys.cursorPos
-			info.hasPos = true
 			return info, true
 		case keyTouch:
 			info.Pos = h.sys.touchTapPos
-			info.hasPos = true
 			return info, true
 		case keyWheel:
 			info.Pos = h.sys.wheel
-			info.hasPos = true
 			return info, true
 		}
 	}
@@ -187,6 +161,18 @@ func (h *Handler) ActionIsJustPressed(action Action) bool {
 		return false
 	}
 	for _, k := range keys {
+		if len(h.sys.simulatedEvents) != 0 {
+			// We want to avoid a situation when simulated input
+			// things that the key is still being pressed and then
+			// receive a real input from the bottom of ebitenutil that
+			// this key was actually "just pressed". To avoid that,
+			// we skip checking the real input if simulated input still
+			// holds that button down. This is why we need a bool3 here.
+			_, isPressed := h.justPressedSimulatedKeyInfo(k)
+			if isPressed != bool3unset {
+				return isPressed == bool3true
+			}
+		}
 		if h.keyIsJustPressed(k) {
 			return true
 		}
@@ -203,6 +189,9 @@ func (h *Handler) ActionIsPressed(action Action) bool {
 		return false
 	}
 	for _, k := range keys {
+		if len(h.sys.simulatedEvents) != 0 && h.simulatedKeyIsPressed(k) {
+			return true
+		}
 		if h.keyIsPressed(k) {
 			return true
 		}
@@ -277,6 +266,38 @@ func (h *Handler) keyIsPressed(k Key) bool {
 	default:
 		return ebiten.IsKeyPressed(ebiten.Key(k.code))
 	}
+}
+
+func (h *Handler) eventSliceFind(slice []SimulatedEvent, k Key) int {
+	for i := range slice {
+		if slice[i].Key == k {
+			return i
+		}
+	}
+	return -1
+}
+
+func (h *Handler) eventSliceContains(slice []SimulatedEvent, k Key) bool {
+	return h.eventSliceFind(slice, k) != -1
+}
+
+func (h *Handler) justPressedSimulatedKeyInfo(k Key) (EventInfo, bool3) {
+	var info EventInfo
+	i := h.eventSliceFind(h.sys.simulatedEvents, k)
+	if i != -1 {
+		if h.eventSliceContains(h.sys.prevSimulatedEvents, k) {
+			return info, bool3false
+		}
+		info.Pos = h.sys.simulatedEvents[i].Pos
+		info.kind = k.kind
+		info.hasPos = keysWithPos[k.kind]
+		return info, bool3true
+	}
+	return info, bool3unset
+}
+
+func (h *Handler) simulatedKeyIsPressed(k Key) bool {
+	return h.eventSliceContains(h.sys.simulatedEvents, k)
 }
 
 func (h *Handler) isDPadAxisActive(code int, vec Vec) bool {
@@ -386,4 +407,14 @@ func (h *Handler) mappedGamepadKey(keyCode int) ebiten.GamepadButton {
 	default:
 		return ebiten.GamepadButton(keyCode)
 	}
+}
+
+// Using a 256-byte LUT to get a fast map-like lookup without a bound check.
+var keysWithPos = [256]bool{
+	keyMouse:              true,
+	keyMouseWithCtrl:      true,
+	keyMouseWithShift:     true,
+	keyMouseWithCtrlShift: true,
+	keyTouch:              true,
+	keyWheel:              true,
 }
