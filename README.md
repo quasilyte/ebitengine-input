@@ -237,3 +237,12 @@ input.KeyWithModifier(input.KeyC, input.ModControl)
 ```
 
 See an [example](_examples/basic/main.go) for a complete source code.
+
+### Thread Safety Notice
+
+This library never does any synchronization on its own. It's implied that you don't do a concurrent access to the input devices.
+
+Therefore, keep in mind:
+
+* Emitting a simulated input event from several goroutines is a data race
+* Using any `Handler` APIs while `System.Update` is in process is a data race
