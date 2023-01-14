@@ -10,22 +10,22 @@ import (
 //
 // It can also be used as a string->key constructor:
 //
-//     ParseKey("left")         // returns KeyLeft
-//     ParseKey("gamepad_left") // returns KeyGamepadLeft
+//	ParseKey("left")         // returns KeyLeft
+//	ParseKey("gamepad_left") // returns KeyGamepadLeft
 //
 // The format is one of the following:
 //
-//     * keyname
-//     * mod+keyname
-//     * mod+mod+keyname
+//   - keyname
+//   - mod+keyname
+//   - mod+mod+keyname
 //
 // Some valid input examples:
 //
-//     * "gamepad_left"
-//     * "left"
-//     * "ctrl+left"
-//     * "ctrl+shift+left"
-//     * "shift+ctrl+left"
+//   - "gamepad_left"
+//   - "left"
+//   - "ctrl+left"
+//   - "ctrl+shift+left"
+//   - "shift+ctrl+left"
 //
 // See Handler.ActionKeyNames() for more information about the key names.
 func ParseKey(s string) (Key, error) {

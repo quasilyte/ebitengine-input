@@ -11,9 +11,9 @@ import (
 //
 // Store System object (by value) inside your game context/state object like this:
 //
-//    struct GameState {
-//        InputSystem input.System
-//    }
+//	struct GameState {
+//	    InputSystem input.System
+//	}
 //
 // When ebitengine game is executed, call gameState.InputSystem.Init() once.
 //
@@ -40,13 +40,13 @@ type System struct {
 // This configuration can't be changed once created.
 type SystemConfig struct {
 	// DevicesEnabled selects the input devices that should be handled.
-	// For the most cases, AnyInput value is a good option.
-	DevicesEnabled InputDeviceKind
+	// For the most cases, AnyDevice value is a good option.
+	DevicesEnabled DeviceKind
 }
 
 func (sys *System) Init(config SystemConfig) {
-	sys.touchEnabled = config.DevicesEnabled&TouchInput != 0
-	sys.mouseEnabled = config.DevicesEnabled&MouseInput != 0
+	sys.touchEnabled = config.DevicesEnabled&TouchDevice != 0
+	sys.mouseEnabled = config.DevicesEnabled&MouseDevice != 0
 
 	sys.gamepadIDs = make([]ebiten.GamepadID, 0, 8)
 	sys.gamepadInfo = make([]gamepadInfo, 8)

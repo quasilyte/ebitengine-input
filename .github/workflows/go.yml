@@ -1,0 +1,27 @@
+# This file adheres to the YAML5 style.
+{
+  "name": "Go",
+  "on": ["push", "pull_request"],
+  "jobs": {
+    "build": {
+      "name": "Build",
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "name": "Set up Go 1.19",
+          "uses": "actions/setup-go@v1",
+          "with": {"go-version": 1.19},
+          "id": "go",
+        },
+        {
+          "name": "Set up dependencies",
+          "run": "sudo -E apt-add-repository -y 'ppa:ubuntu-toolchain-r' && sudo apt-get install libasound2-dev libglew-dev libgles2-mesa-dev libalut-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev",
+        },
+        {"name": "Check out code into the Go module directory", "uses": "actions/checkout@v1"},
+        {"name": "Test", "run": "make test"},
+        {"name": "Linter", "run": "make lint"},
+      ],
+    },
+  },
+}
+

@@ -2,7 +2,10 @@ module github.com/quasilyte/ebitengine-input
 
 go 1.18
 
-require github.com/hajimehoshi/ebiten/v2 v2.4.8
+require (
+	github.com/hajimehoshi/ebiten/v2 v2.4.8
+	github.com/quasilyte/gmath v0.0.0-20221217210116-fba37a2e15c7
+)
 
 require (
 	github.com/ebitengine/purego v0.0.0-20220905075623-aeed57cda744 // indirect

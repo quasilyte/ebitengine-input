@@ -67,7 +67,7 @@ type exampleGame struct {
 func newExampleGame() *exampleGame {
 	g := &exampleGame{}
 	g.inputSystem.Init(input.SystemConfig{
-		DevicesEnabled: input.AnyInput,
+		DevicesEnabled: input.AnyDevice,
 	})
 	keymap := input.Keymap{
 		ActionMoveLeft:  {input.KeyGamepadLeft, input.KeyLeft, input.KeyA},
@@ -190,7 +190,7 @@ You'll need to call the `input.System.Init()` once before calling its `Update()`
 func newMyGame() *myGame {
     g := &myGame{}
     g.inputSystem.Init(input.SystemConfig{
-		DevicesEnabled: input.AnyInput,
+		DevicesEnabled: input.AnyDevice,
 	})
     // ... rest of the game object initialization
     return g
@@ -215,7 +215,7 @@ Another benefit of this system is that we can get a list of relevant key events 
 // Otherwise show only keyboard-related keys.
 inputDeviceMask := input.KeyboardInput
 if h.GamepadConnected() {
-    inputDeviceMask = GamepadInput
+    inputDeviceMask = input.GamepadInput
 }
 keyNames := h.ActionKeyNames(ActionMoveLeft, inputDeviceMask)
 ```
