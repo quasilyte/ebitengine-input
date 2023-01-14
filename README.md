@@ -1,5 +1,6 @@
 ## Ebitengine input library
 
+![Build Status](https://github.com/quasilyte/ebitengine-input/workflows/Go/badge.svg)
 [![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/quasilyte/ebitengine-input)](https://pkg.go.dev/mod/github.com/quasilyte/ebitengine-input)
 
 ### Overview
