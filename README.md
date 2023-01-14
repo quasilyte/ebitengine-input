@@ -21,6 +21,12 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 * Wheel/scroll as action events
 * Can be used without extra deps or with [gmath](https://github.com/quasilyte/gmath) integration
 
+Some games that were built with this library:
+
+* [Decipherism](https://quasilyte.itch.io/decipherism)
+* [Retrowave City](https://quasilyte.itch.io/retrowave-city)
+* [Autotanks](https://quasilyte.itch.io/autotanks)
+
 ### Installation
 
 ```bash
