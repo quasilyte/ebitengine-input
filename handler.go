@@ -88,6 +88,10 @@ func (h *Handler) EmitEvent(e SimulatedEvent) {
 // show keyboard options listed. For the simple cases, you can use
 // DefaultInputMask() method to get the mask that will try to avoid
 // that situation. See its comment to learn more.
+//
+// Keys with modifiers will have them listed too.
+// Modifiers are separated by "+".
+// A "k" keyboard key with ctrl modifier will have a "ctrl+k" name.
 func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 	keys, ok := h.keymap[action]
 	if !ok {
@@ -97,9 +101,31 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 	result := make([]string, 0, len(keys))
 	for _, k := range keys {
 		enabled := true
+		ctrlMod := false
+		shiftMod := false
 		switch k.kind {
+		case keyKeyboardWithCtrlShift:
+			ctrlMod = true
+			shiftMod = true
+			enabled = mask&KeyboardDevice != 0
+		case keyKeyboardWithCtrl:
+			ctrlMod = true
+			enabled = mask&KeyboardDevice != 0
+		case keyKeyboardWithShift:
+			shiftMod = true
+			enabled = mask&KeyboardDevice != 0
 		case keyKeyboard:
 			enabled = mask&KeyboardDevice != 0
+		case keyMouseWithCtrlShift:
+			ctrlMod = true
+			shiftMod = true
+			enabled = mask&MouseDevice != 0
+		case keyMouseWithCtrl:
+			ctrlMod = true
+			enabled = mask&MouseDevice != 0
+		case keyMouseWithShift:
+			shiftMod = true
+			enabled = mask&MouseDevice != 0
 		case keyMouse:
 			enabled = mask&MouseDevice != 0
 		case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick:
@@ -108,7 +134,14 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 			enabled = h.sys.touchEnabled && (mask&TouchDevice != 0)
 		}
 		if enabled {
-			result = append(result, k.name)
+			name := k.name
+			if shiftMod {
+				name = "shift+" + name
+			}
+			if ctrlMod {
+				name = "ctrl+" + name
+			}
+			result = append(result, name)
 		}
 	}
 	return result
