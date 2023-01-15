@@ -6,13 +6,12 @@
   "fast": false,
   "linters": {
     "enable": [
-      "deadcode",
       "errcheck",
       "gas",
       "gocritic",
       "gofmt",
       "goimports",
-      "golint",
+      "revive",
       "govet",
       "gosimple",
       "ineffassign",
@@ -20,11 +19,9 @@
       "misspell",
       "nakedret",
       "staticcheck",
-      "structcheck",
       "unconvert",
       "unparam",
       "unused",
-      "varcheck",
     ],
   },
   "disable": [
