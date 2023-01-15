@@ -87,7 +87,7 @@ func (g *exampleGame) init() {
 
 	g.state.inputHandlers = make([]*input.Handler, 4)
 	for i := range g.state.inputHandlers {
-		g.state.inputHandlers[i] = g.inputSystem.NewHandler(i, keymap)
+		g.state.inputHandlers[i] = g.inputSystem.NewHandler(uint8(i), keymap)
 	}
 
 	g.currentScene = &lobbyScene{

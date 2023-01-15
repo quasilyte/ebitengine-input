@@ -45,15 +45,6 @@ const (
 	stickLeft
 )
 
-const (
-	// Make "unused" linter happy.
-	// We have these unknown values as a programming habbit of having
-	// an invalid (undefined) state of the enum value.
-	_ = touchUnknown
-	_ = wheelUnknown
-	_ = stickUnknown
-)
-
 type keyKindFlag uint8
 
 const (
