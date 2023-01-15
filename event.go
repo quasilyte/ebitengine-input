@@ -1,12 +1,31 @@
 package input
 
-// SimulatedEvent represents a virtual input that can be send down the stream.
+// SimulatedKeyEvent represents a virtual input that can be send down the stream.
 //
 // The data carried by this event will be used to construct an EventInfo object.
 //
 // Experimental: this is a part of virtual input API, which is not stable yet.
-type SimulatedEvent struct {
+type SimulatedKeyEvent struct {
 	Key Key
+
+	Pos Vec
+}
+
+// SimulatedAction represents an artificially triggered action.
+//
+// It shares many properties with SimulatedKeyEvent, but
+// the event consumers will have no way of knowing which input
+// device was used to emit this event, because SimulatedAction
+// has no device associated with it.
+//
+// As a consequence, all event info methods like IsGamepadeEvent() will report false.
+// It's possible to trigger an action that has no keys associated with it.
+// All actions triggered using this method will be only visible to the handler
+// of the same player ID (like gamepad button events).
+//
+// Experimental: this is a part of virtual input API, which is not stable yet.
+type SimulatedAction struct {
+	Action Action
 
 	Pos Vec
 }
@@ -46,4 +65,12 @@ func (e EventInfo) IsGamepadEvent() bool {
 	default:
 		return false
 	}
+}
+
+type simulatedEvent struct {
+	code     int
+	keyKind  keyKind
+	playerID uint8
+
+	pos Vec
 }

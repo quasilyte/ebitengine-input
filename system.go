@@ -25,9 +25,10 @@ type System struct {
 	gamepadIDs  []ebiten.GamepadID
 	gamepadInfo []gamepadInfo
 
-	pendingEvents       []SimulatedEvent
-	prevSimulatedEvents []SimulatedEvent
-	simulatedEvents     []SimulatedEvent
+	pendingEvents       []simulatedEvent
+	prevSimulatedEvents []simulatedEvent
+	simulatedEvents     []simulatedEvent
+	hasSimulatedActions bool
 
 	touchEnabled bool
 	touchIDs     []ebiten.TouchID
@@ -70,6 +71,13 @@ func (sys *System) Update() {
 	sys.prevSimulatedEvents, sys.pendingEvents, sys.simulatedEvents =
 		sys.simulatedEvents, sys.prevSimulatedEvents, sys.pendingEvents
 	sys.pendingEvents = sys.pendingEvents[:0]
+	sys.hasSimulatedActions = false
+	for i := range sys.simulatedEvents {
+		if sys.simulatedEvents[i].keyKind == keySimulated {
+			sys.hasSimulatedActions = true
+			break
+		}
+	}
 
 	sys.gamepadIDs = ebiten.AppendGamepadIDs(sys.gamepadIDs[:0])
 	if len(sys.gamepadIDs) != 0 {
@@ -152,7 +160,7 @@ func (sys *System) updateGamepadInfo(id ebiten.GamepadID, info *gamepadInfo) {
 // NewHandler creates a handler associated with player/device ID.
 // IDs should start with 0 with a step of 1.
 // So, NewHandler(0, ...) then NewHandler(1, ...).
-func (sys *System) NewHandler(playerID int, keymap Keymap) *Handler {
+func (sys *System) NewHandler(playerID uint8, keymap Keymap) *Handler {
 	return &Handler{
 		id:     playerID,
 		keymap: keymap,
