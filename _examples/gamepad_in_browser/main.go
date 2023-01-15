@@ -107,7 +107,6 @@ func (s *lobbyScene) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrintAt(screen, "connect gamepads, press buttons", 200, 160)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("the scene changes in %.1f seconds", s.secondsLeft), 200, 200)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("gamepads detected: %d", s.gamepads), 240, 240)
-
 }
 
 func (s *lobbyScene) Update() scene {
