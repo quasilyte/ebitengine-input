@@ -80,9 +80,9 @@ func (g *exampleGame) Draw(screen *ebiten.Image) {
 
 func (g *exampleGame) init() {
 	keymap := input.Keymap{
-		// ActionMoveLeft:  {input.KeyGamepadLeft, input.KeyGamepadLStickLeft},
-		// ActionMoveRight: {input.KeyGamepadRight, input.KeyGamepadLStickRight},
-		ActionDebug: {input.KeyGamepadLeft},
+		ActionMoveLeft:  {input.KeyGamepadLeft, input.KeyGamepadLStickLeft},
+		ActionMoveRight: {input.KeyGamepadRight, input.KeyGamepadLStickRight},
+		ActionDebug:     {input.KeyGamepadLeft},
 	}
 
 	g.state.inputHandlers = make([]*input.Handler, 4)
