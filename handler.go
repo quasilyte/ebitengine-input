@@ -17,7 +17,7 @@ import (
 //
 // If any game object needs to handle the input, they need an input handler object.
 type Handler struct {
-	id     int
+	id     uint8
 	keymap Keymap
 	sys    *System
 }
@@ -65,14 +65,40 @@ func (h *Handler) DefaultInputMask() DeviceKind {
 	return KeyboardDevice | MouseDevice
 }
 
-// EmitEvent sends given key event into the input system.
+// EmitKeyEvent sends given key event into the input system.
 //
 // The event is emitted from the perspective of this handler,
 // so the gamepad events will be handled properly in the multi-device context.
 //
+// Note: simulated events are only visible after the next System.Update() call.
+//
+// See SimulatedKeyEvent documentation for more info.
+//
 // Experimental: this is a part of virtual input API, which is not stable yet.
-func (h *Handler) EmitEvent(e SimulatedEvent) {
-	h.sys.pendingEvents = append(h.sys.pendingEvents, e)
+func (h *Handler) EmitKeyEvent(e SimulatedKeyEvent) {
+	h.sys.pendingEvents = append(h.sys.pendingEvents, simulatedEvent{
+		code:     e.Key.code,
+		keyKind:  e.Key.kind,
+		playerID: h.id,
+		pos:      e.Pos,
+	})
+}
+
+// EmitEvent activates the given action for the player.
+// Only the handlers with the same player ID will discover this action.
+//
+// Note: simulated events are only visible after the next System.Update() call.p
+//
+// See SimulatedAction documentation for more info.
+//
+// Experimental: this is a part of virtual input API, which is not stable yet.
+func (h *Handler) EmitEvent(e SimulatedAction) {
+	h.sys.pendingEvents = append(h.sys.pendingEvents, simulatedEvent{
+		code:     int(e.Action),
+		keyKind:  keySimulated,
+		playerID: h.id,
+		pos:      e.Pos,
+	})
 }
 
 // ActionKeyNames returns a list of key names associated by this action.
@@ -149,17 +175,15 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 
 // JustPressedActionInfo is like ActionIsJustPressed, but with more information.
 //
+// The first return value will hold the extra event info.
 // The second return value is false is given action is not activated.
 //
-// The first return value will hold the extra event info.
 // See EventInfo comment to learn more.
 func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
-	var info EventInfo
 	keys, ok := h.keymap[action]
 	if !ok {
-		return info, false
+		return EventInfo{}, false
 	}
-	isPressed := false
 	for _, k := range keys {
 		if info, status := h.justPressedSimulatedKeyInfo(k); status == bool3true {
 			return info, true
@@ -167,22 +191,27 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 		if !h.keyIsJustPressed(k) {
 			continue
 		}
-		isPressed = true
+		var info EventInfo
 		info.kind = k.kind
-		info.hasPos = keysWithPos[k.kind]
+		info.hasPos = keyHasPos(k.kind)
 		switch k.kind {
 		case keyMouse, keyMouseWithCtrl, keyMouseWithShift, keyMouseWithCtrlShift:
 			info.Pos = h.sys.cursorPos
-			return info, true
 		case keyTouch:
 			info.Pos = h.sys.touchTapPos
-			return info, true
 		case keyWheel:
 			info.Pos = h.sys.wheel
-			return info, true
 		}
+		return info, true
 	}
-	return info, isPressed
+	if h.sys.hasSimulatedActions {
+		info, status := h.justPressedSimulatedKeyInfo(Key{
+			code: int(action),
+			kind: keySimulated,
+		})
+		return info, status == bool3true
+	}
+	return EventInfo{}, false
 }
 
 // ActionIsJustPressed is like ebitenutil.IsKeyJustPressed, but operates
@@ -210,6 +239,13 @@ func (h *Handler) ActionIsJustPressed(action Action) bool {
 			return true
 		}
 	}
+	if h.sys.hasSimulatedActions {
+		_, isPressed := h.justPressedSimulatedKeyInfo(Key{
+			code: int(action),
+			kind: keySimulated,
+		})
+		return isPressed == bool3true
+	}
 	return false
 }
 
@@ -228,6 +264,12 @@ func (h *Handler) ActionIsPressed(action Action) bool {
 		if h.keyIsPressed(k) {
 			return true
 		}
+	}
+	if h.sys.hasSimulatedActions {
+		return h.simulatedKeyIsPressed(Key{
+			code: int(action),
+			kind: keySimulated,
+		})
 	}
 	return false
 }
@@ -301,16 +343,19 @@ func (h *Handler) keyIsPressed(k Key) bool {
 	}
 }
 
-func (h *Handler) eventSliceFind(slice []SimulatedEvent, k Key) int {
-	for i := range slice {
-		if slice[i].Key == k {
+func (h *Handler) eventSliceFind(slice []simulatedEvent, k Key) int {
+	for i, e := range slice {
+		if e.code == k.code && e.keyKind == k.kind {
+			if keyNeedID(e.keyKind) && e.playerID != h.id {
+				continue
+			}
 			return i
 		}
 	}
 	return -1
 }
 
-func (h *Handler) eventSliceContains(slice []SimulatedEvent, k Key) bool {
+func (h *Handler) eventSliceContains(slice []simulatedEvent, k Key) bool {
 	return h.eventSliceFind(slice, k) != -1
 }
 
@@ -321,9 +366,9 @@ func (h *Handler) justPressedSimulatedKeyInfo(k Key) (EventInfo, bool3) {
 		if h.eventSliceContains(h.sys.prevSimulatedEvents, k) {
 			return info, bool3false
 		}
-		info.Pos = h.sys.simulatedEvents[i].Pos
+		info.Pos = h.sys.simulatedEvents[i].pos
 		info.kind = k.kind
-		info.hasPos = keysWithPos[k.kind]
+		info.hasPos = keyHasPos(k.kind)
 		return info, bool3true
 	}
 	return info, bool3unset
@@ -440,14 +485,4 @@ func (h *Handler) mappedGamepadKey(keyCode int) ebiten.GamepadButton {
 	default:
 		return ebiten.GamepadButton(keyCode)
 	}
-}
-
-// Using a 256-byte LUT to get a fast map-like lookup without a bound check.
-var keysWithPos = [256]bool{
-	keyMouse:              true,
-	keyMouseWithCtrl:      true,
-	keyMouseWithShift:     true,
-	keyMouseWithCtrlShift: true,
-	keyTouch:              true,
-	keyWheel:              true,
 }

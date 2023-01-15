@@ -127,7 +127,7 @@ func (g *exampleGame) Init() {
 		if i == 0 {
 			m = keymap0
 		}
-		h := g.inputSystem.NewHandler(i, m)
+		h := g.inputSystem.NewHandler(uint8(i), m)
 		if h.GamepadConnected() {
 			numGamepads++
 		}
