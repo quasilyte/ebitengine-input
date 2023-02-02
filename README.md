@@ -19,6 +19,7 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 * No extra dependencies (apart from the [Ebitengine](https://github.com/hajimehoshi/ebiten) of course)
 * Solves some issues related to gamepads in browsers
 * Wheel/scroll as action events
+* Motion-style events, like "gamepad stick just moved" (see [smooth_movement](_examples/smooth_movement/main.go) example)
 * Can be used without extra deps or with [gmath](https://github.com/quasilyte/gmath) integration
 
 This library may require some extra docs, code comments and examples. You can significantly help me by providing those. Pointing out what is currently missing is helpful too!

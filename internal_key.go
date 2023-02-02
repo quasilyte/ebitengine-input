@@ -10,6 +10,7 @@ const (
 	keyGamepad
 	keyGamepadLeftStick
 	keyGamepadRightStick
+	keyGamepadStickMotion
 	keyMouse
 	keyMouseWithCtrl
 	keyMouseWithShift
@@ -67,6 +68,8 @@ var keyKindFlagTable = [256]keyKindFlag{
 	keyGamepad:           keyFlagNeedID,
 	keyGamepadLeftStick:  keyFlagNeedID,
 	keyGamepadRightStick: keyFlagNeedID,
+
+	keyGamepadStickMotion: keyFlagHasPos | keyFlagNeedID,
 
 	keyMouse:              keyFlagHasPos,
 	keyMouseWithCtrl:      keyFlagHasPos,

@@ -185,7 +185,7 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 		return EventInfo{}, false
 	}
 	for _, k := range keys {
-		if info, status := h.justPressedSimulatedKeyInfo(k); status == bool3true {
+		if info, status := h.pressedSimulatedKeyInfo(true, k); status == bool3true {
 			return info, true
 		}
 		if !h.keyIsJustPressed(k) {
@@ -194,22 +194,42 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 		var info EventInfo
 		info.kind = k.kind
 		info.hasPos = keyHasPos(k.kind)
-		switch k.kind {
-		case keyMouse, keyMouseWithCtrl, keyMouseWithShift, keyMouseWithCtrlShift:
-			info.Pos = h.sys.cursorPos
-		case keyTouch:
-			info.Pos = h.sys.touchTapPos
-		case keyWheel:
-			info.Pos = h.sys.wheel
-		}
+		info.Pos = h.getKeyPos(k)
 		return info, true
 	}
 	if h.sys.hasSimulatedActions {
-		info, status := h.justPressedSimulatedKeyInfo(Key{
+		info, status := h.pressedSimulatedKeyInfo(true, Key{
 			code: int(action),
 			kind: keySimulated,
 		})
 		return info, status == bool3true
+	}
+	return EventInfo{}, false
+}
+
+// PressedActionInfo is like ActionIsPressed, but with more information.
+//
+// The first return value will hold the extra event info.
+// The second return value is false if given action is not activated.
+//
+// See EventInfo comment to learn more.
+func (h *Handler) PressedActionInfo(action Action) (EventInfo, bool) {
+	keys, ok := h.keymap[action]
+	if !ok {
+		return EventInfo{}, false
+	}
+	for _, k := range keys {
+		if info, status := h.pressedSimulatedKeyInfo(false, k); status == bool3true {
+			return info, true
+		}
+		if !h.keyIsPressed(k) {
+			continue
+		}
+		var info EventInfo
+		info.kind = k.kind
+		info.hasPos = keyHasPos(k.kind)
+		info.Pos = h.getKeyPos(k)
+		return info, true
 	}
 	return EventInfo{}, false
 }
@@ -230,7 +250,7 @@ func (h *Handler) ActionIsJustPressed(action Action) bool {
 			// this key was actually "just pressed". To avoid that,
 			// we skip checking the real input if simulated input still
 			// holds that button down. This is why we need a bool3 here.
-			_, isPressed := h.justPressedSimulatedKeyInfo(k)
+			_, isPressed := h.pressedSimulatedKeyInfo(true, k)
 			if isPressed != bool3unset {
 				return isPressed == bool3true
 			}
@@ -240,7 +260,7 @@ func (h *Handler) ActionIsJustPressed(action Action) bool {
 		}
 	}
 	if h.sys.hasSimulatedActions {
-		_, isPressed := h.justPressedSimulatedKeyInfo(Key{
+		_, isPressed := h.pressedSimulatedKeyInfo(true, Key{
 			code: int(action),
 			kind: keySimulated,
 		})
@@ -287,6 +307,8 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 		return h.gamepadStickIsJustPressed(stickCode(k.code), ebiten.StandardGamepadAxisLeftStickHorizontal, ebiten.StandardGamepadAxisLeftStickVertical)
 	case keyGamepadRightStick:
 		return h.gamepadStickIsJustPressed(stickCode(k.code), ebiten.StandardGamepadAxisRightStickHorizontal, ebiten.StandardGamepadAxisRightStickVertical)
+	case keyGamepadStickMotion:
+		return h.gamepadStickMotionIsJustPressed(stickCode(k.code))
 	case keyMouse:
 		return inpututil.IsMouseButtonJustPressed(ebiten.MouseButton(k.code))
 	case keyMouseWithCtrl:
@@ -316,6 +338,22 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 	}
 }
 
+func (h *Handler) getKeyPos(k Key) Vec {
+	var result Vec
+	switch k.kind {
+	case keyMouse, keyMouseWithCtrl, keyMouseWithShift, keyMouseWithCtrlShift:
+		result = h.sys.cursorPos
+	case keyTouch:
+		result = h.sys.touchTapPos
+	case keyWheel:
+		result = h.sys.wheel
+	case keyGamepadStickMotion:
+		axis1, axis2 := h.getStickAxes(stickCode(k.code))
+		result = h.getStickVec(axis1, axis2)
+	}
+	return result
+}
+
 func (h *Handler) keyIsPressed(k Key) bool {
 	switch k.kind {
 	case keyGamepad:
@@ -324,6 +362,8 @@ func (h *Handler) keyIsPressed(k Key) bool {
 		return h.gamepadStickIsPressed(stickCode(k.code), ebiten.StandardGamepadAxisLeftStickHorizontal, ebiten.StandardGamepadAxisLeftStickVertical)
 	case keyGamepadRightStick:
 		return h.gamepadStickIsPressed(stickCode(k.code), ebiten.StandardGamepadAxisRightStickHorizontal, ebiten.StandardGamepadAxisRightStickVertical)
+	case keyGamepadStickMotion:
+		return h.gamepadStickMotionIsPressed(stickCode(k.code))
 	case keyMouse:
 		return ebiten.IsMouseButtonPressed(ebiten.MouseButton(k.code))
 	case keyMouseWithCtrl:
@@ -359,11 +399,11 @@ func (h *Handler) eventSliceContains(slice []simulatedEvent, k Key) bool {
 	return h.eventSliceFind(slice, k) != -1
 }
 
-func (h *Handler) justPressedSimulatedKeyInfo(k Key) (EventInfo, bool3) {
+func (h *Handler) pressedSimulatedKeyInfo(justPressed bool, k Key) (EventInfo, bool3) {
 	var info EventInfo
 	i := h.eventSliceFind(h.sys.simulatedEvents, k)
 	if i != -1 {
-		if h.eventSliceContains(h.sys.prevSimulatedEvents, k) {
+		if justPressed && h.eventSliceContains(h.sys.prevSimulatedEvents, k) {
 			return info, bool3false
 		}
 		info.Pos = h.sys.simulatedEvents[i].pos
@@ -448,8 +488,39 @@ func (h *Handler) gamepadStickIsActive(code stickCode, vec Vec) bool {
 }
 
 func (h *Handler) gamepadStickIsJustPressed(code stickCode, axis1, axis2 ebiten.StandardGamepadAxis) bool {
-	return !h.gamepadStickIsActive(code, h.getStickPrevVec(axis1, axis2)) &&
+	return !h.gamepadStickIsActive(code, h.getStickPrevVec(int(axis1), int(axis2))) &&
 		h.gamepadStickIsActive(code, h.getStickVec(int(axis1), int(axis2)))
+}
+
+func (h *Handler) getStickAxes(code stickCode) (int, int) {
+	var axis1 int
+	var axis2 int
+	if code == stickLeft {
+		axis1 = int(ebiten.StandardGamepadAxisLeftStickHorizontal)
+		axis2 = int(ebiten.StandardGamepadAxisLeftStickVertical)
+	} else {
+		axis1 = int(ebiten.StandardGamepadAxisRightStickHorizontal)
+		axis2 = int(ebiten.StandardGamepadAxisRightStickVertical)
+	}
+	return axis1, axis2
+}
+
+func (h *Handler) gamepadStickMotionIsJustPressed(code stickCode) bool {
+	return !h.gamepadStickMotionIsActive(h.getStickPrevVec(h.getStickAxes(code))) &&
+		h.gamepadStickMotionIsActive(h.getStickVec(h.getStickAxes(code)))
+}
+
+func (h *Handler) gamepadStickMotionIsPressed(code stickCode) bool {
+	return h.gamepadStickMotionIsActive(h.getStickVec(h.getStickAxes(code)))
+}
+
+func (h *Handler) gamepadStickMotionIsActive(vec Vec) bool {
+	// Some gamepads could register a slight movement all the time,
+	// even if the stick is in its home position.
+	// This min sensitivity should probably be configurable.
+	// My gamepads may have false positive activations with a
+	// value lower than 0.03; we're using 0.055 here just to be safe.
+	return math.Abs(vec.X)+math.Abs(vec.Y) >= 0.055
 }
 
 func (h *Handler) gamepadStickIsPressed(code stickCode, axis1, axis2 ebiten.StandardGamepadAxis) bool {
@@ -457,7 +528,7 @@ func (h *Handler) gamepadStickIsPressed(code stickCode, axis1, axis2 ebiten.Stan
 	return h.gamepadStickIsActive(code, vec)
 }
 
-func (h *Handler) getStickPrevVec(axis1, axis2 ebiten.StandardGamepadAxis) Vec {
+func (h *Handler) getStickPrevVec(axis1, axis2 int) Vec {
 	return Vec{
 		X: h.gamepadInfo().prevAxisValues[axis1],
 		Y: h.gamepadInfo().prevAxisValues[axis2],
