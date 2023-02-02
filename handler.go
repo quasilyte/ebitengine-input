@@ -176,7 +176,7 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 // JustPressedActionInfo is like ActionIsJustPressed, but with more information.
 //
 // The first return value will hold the extra event info.
-// The second return value is false is given action is not activated.
+// The second return value is false if given action is not activated.
 //
 // See EventInfo comment to learn more.
 func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
