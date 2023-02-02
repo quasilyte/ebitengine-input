@@ -133,7 +133,7 @@ func (sys *System) updateGamepadInfo(id ebiten.GamepadID, info *gamepadInfo) {
 	switch info.model {
 	case gamepadStandard:
 		copy(info.prevAxisValues[:], info.axisValues[:])
-		for axis := ebiten.StandardGamepadAxisLeftStickHorizontal; axis < ebiten.StandardGamepadAxisMax; axis++ {
+		for axis := ebiten.StandardGamepadAxisLeftStickHorizontal; axis <= ebiten.StandardGamepadAxisMax; axis++ {
 			v := ebiten.StandardGamepadAxisValue(id, axis)
 			info.axisValues[int(axis)] = v
 		}
