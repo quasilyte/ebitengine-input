@@ -4,7 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-//go:generate go run ./_scripts/gen_key_list -o internal_key_list.go key.go
+//go:generate go run --tags generate ./_scripts/gen_key_list -o internal_key_list.go key.go
 
 // Key represents an input method that can be used to activate Action.
 // Key could be a keyboard key, a gamepad key, a mouse button, etc.
@@ -177,6 +177,7 @@ var (
 	KeyGamepadDown  = Key{code: int(ebiten.StandardGamepadButtonLeftBottom), kind: keyGamepad, name: "gamepad_down"}
 	KeyGamepadLeft  = Key{code: int(ebiten.StandardGamepadButtonLeftLeft), kind: keyGamepad, name: "gamepad_left"}
 
+	// Stick keys that simulate the D-pad like events.
 	KeyGamepadLStickUp    = Key{code: int(stickUp), kind: keyGamepadLeftStick, name: "gamepad_lstick_up"}
 	KeyGamepadLStickRight = Key{code: int(stickRight), kind: keyGamepadLeftStick, name: "gamepad_lstick_right"}
 	KeyGamepadLStickDown  = Key{code: int(stickDown), kind: keyGamepadLeftStick, name: "gamepad_lstick_down"}
@@ -185,6 +186,10 @@ var (
 	KeyGamepadRStickRight = Key{code: int(stickRight), kind: keyGamepadRightStick, name: "gamepad_rstick_right"}
 	KeyGamepadRStickDown  = Key{code: int(stickDown), kind: keyGamepadRightStick, name: "gamepad_rstick_down"}
 	KeyGamepadRStickLeft  = Key{code: int(stickLeft), kind: keyGamepadRightStick, name: "gamepad_rstick_left"}
+
+	// Stick keys that can be used for the smooth movement.
+	KeyGamepadLStickMotion = Key{code: int(stickLeft), kind: keyGamepadStickMotion, name: "gamepad_lstick_motion"}
+	KeyGamepadRStickMotion = Key{code: int(stickRight), kind: keyGamepadStickMotion, name: "gamepad_rstick_motion"}
 
 	KeyGamepadA = Key{code: int(ebiten.StandardGamepadButtonRightBottom), kind: keyGamepad, name: "gamepad_a"}
 	KeyGamepadB = Key{code: int(ebiten.StandardGamepadButtonRightRight), kind: keyGamepad, name: "gamepad_b"}
