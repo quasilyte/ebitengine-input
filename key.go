@@ -97,6 +97,7 @@ var (
 	KeyMinus = Key{code: int(ebiten.KeyMinus), name: "minus"}
 	KeyEqual = Key{code: int(ebiten.KeyEqual), name: "equal"}
 
+	KeyQuote     = Key{code: int(ebiten.KeyQuote), name: "quote"}
 	KeyBackquote = Key{code: int(ebiten.KeyBackquote), name: "backquote"}
 
 	KeyQ = Key{code: int(ebiten.KeyQ), name: "q"}
@@ -127,7 +128,11 @@ var (
 	KeyM = Key{code: int(ebiten.KeyM), name: "m"}
 
 	KeyBackspace    = Key{code: int(ebiten.KeyBackspace), name: "backspace"}
+	KeyBracketLeft  = Key{code: int(ebiten.KeyBracketLeft), name: "bracket_left"}
+	KeyBracketRight = Key{code: int(ebiten.KeyBracketRight), name: "bracket_right"}
+	KeyCapsLock     = Key{code: int(ebiten.KeyCapsLock), name: "caps_lock"}
 	KeyComma        = Key{code: int(ebiten.KeyComma), name: "comma"}
+	KeyContextMenu  = Key{code: int(ebiten.KeyContextMenu), name: "context_menu"}
 	KeyControl      = Key{code: int(ebiten.KeyControl), name: "control"}
 	KeyControlLeft  = Key{code: int(ebiten.KeyControlLeft), name: "control_left"}
 	KeyControlRight = Key{code: int(ebiten.KeyControlRight), name: "control_right"}
@@ -139,13 +144,30 @@ var (
 	KeyInsert       = Key{code: int(ebiten.KeyInsert), name: "insert"}
 	KeyPageDown     = Key{code: int(ebiten.KeyPageDown), name: "page_down"}
 	KeyPageUp       = Key{code: int(ebiten.KeyPageUp), name: "page_up"}
+	KeyPause        = Key{code: int(ebiten.KeyPause), name: "pause"}
 	KeyPeriod       = Key{code: int(ebiten.KeyPeriod), name: "period"}
+	KeyPrintScreen  = Key{code: int(ebiten.KeyPrintScreen), name: "print_screen"}
+	KeyScrollLock   = Key{code: int(ebiten.KeyScrollLock), name: "scroll_lock"}
+	KeySemicolon    = Key{code: int(ebiten.KeySemicolon), name: "semicolon"}
 	KeyShift        = Key{code: int(ebiten.KeyShift), name: "shift"}
 	KeyShiftLeft    = Key{code: int(ebiten.KeyShiftLeft), name: "shift_left"}
 	KeyShiftRight   = Key{code: int(ebiten.KeyShiftRight), name: "shift_right"}
 	KeySlash        = Key{code: int(ebiten.KeySlash), name: "slash"}
 	KeySpace        = Key{code: int(ebiten.KeySpace), name: "space"}
 	KeyTab          = Key{code: int(ebiten.KeyTab), name: "tab"}
+
+	KeyF1  = Key{code: int(ebiten.KeyF1), name: "f1"}
+	KeyF2  = Key{code: int(ebiten.KeyF2), name: "f2"}
+	KeyF3  = Key{code: int(ebiten.KeyF3), name: "f3"}
+	KeyF4  = Key{code: int(ebiten.KeyF4), name: "f4"}
+	KeyF5  = Key{code: int(ebiten.KeyF5), name: "f5"}
+	KeyF6  = Key{code: int(ebiten.KeyF6), name: "f6"}
+	KeyF7  = Key{code: int(ebiten.KeyF7), name: "f7"}
+	KeyF8  = Key{code: int(ebiten.KeyF8), name: "f8"}
+	KeyF9  = Key{code: int(ebiten.KeyF9), name: "f9"}
+	KeyF10 = Key{code: int(ebiten.KeyF10), name: "f10"}
+	KeyF11 = Key{code: int(ebiten.KeyF11), name: "f11"}
+	KeyF12 = Key{code: int(ebiten.KeyF12), name: "f12"}
 
 	KeyNum0 = Key{code: int(ebiten.KeyNumpad0), name: "numpad_0"}
 	KeyNum1 = Key{code: int(ebiten.KeyNumpad1), name: "numpad_1"}
