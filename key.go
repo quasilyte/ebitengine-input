@@ -156,18 +156,18 @@ var (
 	KeySpace        = Key{code: int(ebiten.KeySpace), name: "space"}
 	KeyTab          = Key{code: int(ebiten.KeyTab), name: "tab"}
 
-	KeyF1  = Key{code: int(ebiten.KeyF1), name: "f_1"}
-	KeyF2  = Key{code: int(ebiten.KeyF2), name: "f_2"}
-	KeyF3  = Key{code: int(ebiten.KeyF3), name: "f_3"}
-	KeyF4  = Key{code: int(ebiten.KeyF4), name: "f_4"}
-	KeyF5  = Key{code: int(ebiten.KeyF5), name: "f_5"}
-	KeyF6  = Key{code: int(ebiten.KeyF6), name: "f_6"}
-	KeyF7  = Key{code: int(ebiten.KeyF7), name: "f_7"}
-	KeyF8  = Key{code: int(ebiten.KeyF8), name: "f_8"}
-	KeyF9  = Key{code: int(ebiten.KeyF9), name: "f_9"}
-	KeyF10 = Key{code: int(ebiten.KeyF10), name: "f_10"}
-	KeyF11 = Key{code: int(ebiten.KeyF11), name: "f_11"}
-	KeyF12 = Key{code: int(ebiten.KeyF12), name: "f_12"}
+	KeyF1  = Key{code: int(ebiten.KeyF1), name: "f1"}
+	KeyF2  = Key{code: int(ebiten.KeyF2), name: "f2"}
+	KeyF3  = Key{code: int(ebiten.KeyF3), name: "f3"}
+	KeyF4  = Key{code: int(ebiten.KeyF4), name: "f4"}
+	KeyF5  = Key{code: int(ebiten.KeyF5), name: "f5"}
+	KeyF6  = Key{code: int(ebiten.KeyF6), name: "f6"}
+	KeyF7  = Key{code: int(ebiten.KeyF7), name: "f7"}
+	KeyF8  = Key{code: int(ebiten.KeyF8), name: "f8"}
+	KeyF9  = Key{code: int(ebiten.KeyF9), name: "f9"}
+	KeyF10 = Key{code: int(ebiten.KeyF10), name: "f10"}
+	KeyF11 = Key{code: int(ebiten.KeyF11), name: "f11"}
+	KeyF12 = Key{code: int(ebiten.KeyF12), name: "f12"}
 
 	KeyNum0 = Key{code: int(ebiten.KeyNumpad0), name: "numpad_0"}
 	KeyNum1 = Key{code: int(ebiten.KeyNumpad1), name: "numpad_1"}
