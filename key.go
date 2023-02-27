@@ -191,7 +191,7 @@ var (
 // Gamepad keys.
 var (
 	KeyGamepadStart  = Key{code: int(ebiten.StandardGamepadButtonCenterRight), kind: keyGamepad, name: "gamepad_start"}
-	KeyGamepadSelect = Key{code: int(ebiten.StandardGamepadButtonCenterLeft), kind: keyGamepad, name: "gamepad_select"}
+	KeyGamepadBack   = Key{code: int(ebiten.StandardGamepadButtonCenterLeft), kind: keyGamepad, name: "gamepad_back"}
 	KeyGamepadMiddle = Key{code: int(ebiten.StandardGamepadButtonCenterCenter), kind: keyGamepad, name: "gamepad_middle"}
 
 	KeyGamepadUp    = Key{code: int(ebiten.StandardGamepadButtonLeftTop), kind: keyGamepad, name: "gamepad_up"}

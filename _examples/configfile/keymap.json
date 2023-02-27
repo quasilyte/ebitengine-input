@@ -2,6 +2,6 @@
     "Left": ["left", "a", "gamepad_left"],
     "Right": ["right", "d", "gamepad_right"],
     "Pause": ["space", "gamepad_start"],
-    "Restart": ["ctrl+r", "gamepad_select"],
+    "Restart": ["ctrl+r", "gamepad_back"],
     "Secret": ["ctrl+shift+q"]
 }
