@@ -116,7 +116,7 @@ func (g *exampleGame) Init() {
 			input.KeyEscape,
 			input.KeyWithModifier(input.KeyC, input.ModControl),
 		},
-		ActionDebug: {input.KeyControlLeft},
+		ActionDebug: {input.KeyControlLeft, input.KeyGamepadLStick, input.KeyGamepadRStick},
 	}
 
 	// Player 1 will have a teleport ability activated by a mouse click or a touch screen tap.

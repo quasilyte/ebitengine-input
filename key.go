@@ -188,7 +188,7 @@ var (
 	KeyNumSubtract = Key{code: int(ebiten.KeyNumpadSubtract), name: "numpad_subtract"}
 )
 
-// Gamepad keys.
+// Gamepad keys (we're trying to follow the Xbox naming conventions here).
 var (
 	KeyGamepadStart = Key{code: int(ebiten.StandardGamepadButtonCenterRight), kind: keyGamepad, name: "gamepad_start"}
 	KeyGamepadBack  = Key{code: int(ebiten.StandardGamepadButtonCenterLeft), kind: keyGamepad, name: "gamepad_back"}
@@ -208,6 +208,10 @@ var (
 	KeyGamepadRStickRight = Key{code: int(stickRight), kind: keyGamepadRightStick, name: "gamepad_rstick_right"}
 	KeyGamepadRStickDown  = Key{code: int(stickDown), kind: keyGamepadRightStick, name: "gamepad_rstick_down"}
 	KeyGamepadRStickLeft  = Key{code: int(stickLeft), kind: keyGamepadRightStick, name: "gamepad_rstick_left"}
+
+	// Stick button press.
+	KeyGamepadLStick = Key{code: int(ebiten.StandardGamepadButtonLeftStick), kind: keyGamepad, name: "gamepad_lstick"}
+	KeyGamepadRStick = Key{code: int(ebiten.StandardGamepadButtonRightStick), kind: keyGamepad, name: "gamepad_rstick"}
 
 	// Stick keys that can be used for the smooth movement.
 	KeyGamepadLStickMotion = Key{code: int(stickLeft), kind: keyGamepadStickMotion, name: "gamepad_lstick_motion"}
