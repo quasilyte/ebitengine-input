@@ -26,6 +26,7 @@ This library may require some extra docs, code comments and examples. You can si
 
 Some games that were built with this library:
 
+* [Roboden](https://quasilyte.itch.io/roboden)
 * [Decipherism](https://quasilyte.itch.io/decipherism)
 * [Retrowave City](https://quasilyte.itch.io/retrowave-city)
 * [Autotanks](https://quasilyte.itch.io/autotanks)
