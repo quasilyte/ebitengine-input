@@ -30,7 +30,9 @@ const (
 	ActionUnknown input.Action = iota
 	ActionDebug
 	ActionMoveLeft
+	ActionMoveUp
 	ActionMoveRight
+	ActionMoveDown
 	ActionExit
 	ActionTeleport
 )
@@ -106,7 +108,9 @@ func (g *exampleGame) Init() {
 		// Every action can have a list of keys that can activate it.
 		// KeyGamepadLStick<Direction> implements a D-pad like events for L/R sticks.
 		ActionMoveLeft:  {input.KeyGamepadLeft, input.KeyGamepadLStickLeft, input.KeyLeft, input.KeyA},
+		ActionMoveUp:    {input.KeyGamepadUp, input.KeyGamepadLStickUp, input.KeyUp, input.KeyW},
 		ActionMoveRight: {input.KeyGamepadRight, input.KeyGamepadLStickRight, input.KeyRight, input.KeyD},
+		ActionMoveDown:  {input.KeyGamepadDown, input.KeyGamepadLStickDown, input.KeyDown, input.KeyS},
 		ActionExit: {
 			input.KeyGamepadStart,
 			input.KeyEscape,
@@ -177,8 +181,14 @@ func (p *player) Update() {
 	if p.input.ActionIsPressed(ActionMoveLeft) {
 		p.pos.X -= 4
 	}
+	if p.input.ActionIsPressed(ActionMoveUp) {
+		p.pos.Y -= 4
+	}
 	if p.input.ActionIsPressed(ActionMoveRight) {
 		p.pos.X += 4
+	}
+	if p.input.ActionIsPressed(ActionMoveDown) {
+		p.pos.Y += 4
 	}
 	if info, ok := p.input.JustPressedActionInfo(ActionTeleport); ok {
 		p.pos.X = int(info.Pos.X)
