@@ -470,19 +470,22 @@ func (h *Handler) gamepadStickIsActive(code stickCode, vec Vec) bool {
 	if vecLen(vec) < 0.5 {
 		return false
 	}
+	// Allow some axis overlap to emulate double direction pressing,
+	// like with D-pad buttons.
+	const overlap float64 = math.Pi / 7
 	switch code {
 	case stickUp:
 		angle := angleNormalized(vecAngle(vec))
-		return angle > (math.Pi+math.Pi/4) && angle <= (2*math.Pi-math.Pi/4)
+		return angle > (math.Pi+math.Pi/4)-overlap && angle <= (2*math.Pi-math.Pi/4)+overlap
 	case stickRight:
 		angle := angleNormalized(vecAngle(vec))
-		return angle <= (math.Pi/4) || angle > (2*math.Pi-math.Pi/4)
+		return angle <= (math.Pi/4)+overlap || angle > (2*math.Pi-math.Pi/4)-overlap
 	case stickDown:
 		angle := angleNormalized(vecAngle(vec))
-		return angle > (math.Pi/4) && angle <= (math.Pi-math.Pi/4)
+		return angle > (math.Pi/4)-overlap && angle <= (math.Pi-math.Pi/4)+overlap
 	case stickLeft:
 		angle := angleNormalized(vecAngle(vec))
-		return angle > (math.Pi-math.Pi/4) && angle <= (math.Pi+math.Pi/4)
+		return angle > (math.Pi-math.Pi/4)-overlap && angle <= (math.Pi+math.Pi/4)+overlap
 	}
 	return false
 }
