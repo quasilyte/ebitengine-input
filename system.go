@@ -113,10 +113,8 @@ func (sys *System) Update() {
 		// If it was a tap, set a flag.
 		if sys.touchActiveID != -1 && inpututil.IsTouchJustReleased(sys.touchActiveID) {
 			if !sys.touchDragging {
-				x, y := ebiten.TouchPosition(sys.touchActiveID)
-				releasePos := Vec{X: float64(x), Y: float64(y)}
 				sys.touchHasTap = true
-				sys.touchTapPos = releasePos
+				sys.touchTapPos = sys.touchStartPos
 			}
 			sys.touchActiveID = -1
 			sys.touchDragging = false
