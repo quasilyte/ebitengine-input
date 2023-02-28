@@ -26,6 +26,10 @@ type Vec struct {
 	Y float64
 }
 
+func vecDistance(v, v2 Vec) float64 {
+	return math.Sqrt((v.X-v2.X)*(v.X-v2.X) + (v.Y-v2.Y)*(v.Y-v2.Y))
+}
+
 func vecDot(v, v2 Vec) float64 {
 	return (v.X * v2.X) + (v.Y * v2.Y)
 }

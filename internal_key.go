@@ -16,6 +16,7 @@ const (
 	keyMouseWithShift
 	keyMouseWithCtrlShift
 	keyTouch
+	keyTouchDrag
 	keyWheel
 	keySimulated
 )
@@ -25,6 +26,7 @@ type touchCode int
 const (
 	touchUnknown touchCode = iota
 	touchTap
+	touchDrag
 )
 
 type wheelCode int

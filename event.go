@@ -28,6 +28,8 @@ type SimulatedAction struct {
 	Action Action
 
 	Pos Vec
+
+	StartPos Vec
 }
 
 // EventInfo holds extra information about the input device event.
@@ -37,11 +39,15 @@ type SimulatedAction struct {
 // Pos is a tap location for screen touch events.
 // Use HasPos() predicate to know whether there is a pos associated
 // with the event to distinguish between (0, 0) pos and lack of pos info.
+//
+// StartPos is only set for a few events where it makes sense.
+// A drag event, for instance, will store the "dragging from" location there.
 type EventInfo struct {
 	kind   keyKind
 	hasPos bool
 
-	Pos Vec
+	Pos      Vec
+	StartPos Vec
 }
 
 // HasPos reports whether this event has a position associated with it.
@@ -72,5 +78,6 @@ type simulatedEvent struct {
 	keyKind  keyKind
 	playerID uint8
 
-	pos Vec
+	pos      Vec
+	startPos Vec
 }

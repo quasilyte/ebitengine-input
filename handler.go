@@ -98,6 +98,7 @@ func (h *Handler) EmitEvent(e SimulatedAction) {
 		keyKind:  keySimulated,
 		playerID: h.id,
 		pos:      e.Pos,
+		startPos: e.StartPos,
 	})
 }
 
@@ -154,9 +155,9 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 			enabled = mask&MouseDevice != 0
 		case keyMouse:
 			enabled = mask&MouseDevice != 0
-		case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick:
+		case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick, keyGamepadStickMotion:
 			enabled = gamepadConnected && (mask&GamepadDevice != 0)
-		case keyTouch:
+		case keyTouch, keyTouchDrag:
 			enabled = h.sys.touchEnabled && (mask&TouchDevice != 0)
 		}
 		if enabled {
@@ -195,6 +196,7 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 		info.kind = k.kind
 		info.hasPos = keyHasPos(k.kind)
 		info.Pos = h.getKeyPos(k)
+		info.StartPos = h.getKeyStartPos(k)
 		return info, true
 	}
 	if h.sys.hasSimulatedActions {
@@ -229,6 +231,7 @@ func (h *Handler) PressedActionInfo(action Action) (EventInfo, bool) {
 		info.kind = k.kind
 		info.hasPos = keyHasPos(k.kind)
 		info.Pos = h.getKeyPos(k)
+		info.StartPos = h.getKeyStartPos(k)
 		return info, true
 	}
 	return EventInfo{}, false
@@ -301,6 +304,8 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 			return h.sys.touchHasTap
 		}
 		return false
+	case keyTouchDrag:
+		return h.sys.touchJustHadDrag
 	case keyGamepad:
 		return h.gamepadKeyIsJustPressed(k)
 	case keyGamepadLeftStick:
@@ -338,6 +343,15 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 	}
 }
 
+func (h *Handler) getKeyStartPos(k Key) Vec {
+	var result Vec
+	switch k.kind {
+	case keyTouchDrag:
+		result = h.sys.touchStartPos
+	}
+	return result
+}
+
 func (h *Handler) getKeyPos(k Key) Vec {
 	var result Vec
 	switch k.kind {
@@ -345,6 +359,8 @@ func (h *Handler) getKeyPos(k Key) Vec {
 		result = h.sys.cursorPos
 	case keyTouch:
 		result = h.sys.touchTapPos
+	case keyTouchDrag:
+		result = h.sys.touchDragPos
 	case keyWheel:
 		result = h.sys.wheel
 	case keyGamepadStickMotion:
@@ -356,6 +372,13 @@ func (h *Handler) getKeyPos(k Key) Vec {
 
 func (h *Handler) keyIsPressed(k Key) bool {
 	switch k.kind {
+	case keyTouch:
+		if k.code == int(touchTap) {
+			return h.sys.touchHasTap
+		}
+		return false
+	case keyTouchDrag:
+		return h.sys.touchHasDrag
 	case keyGamepad:
 		return h.gamepadKeyIsPressed(k)
 	case keyGamepadLeftStick:
@@ -407,6 +430,7 @@ func (h *Handler) pressedSimulatedKeyInfo(justPressed bool, k Key) (EventInfo, b
 			return info, bool3false
 		}
 		info.Pos = h.sys.simulatedEvents[i].pos
+		info.StartPos = h.sys.simulatedEvents[i].startPos
 		info.kind = k.kind
 		info.hasPos = keyHasPos(k.kind)
 		return info, bool3true
