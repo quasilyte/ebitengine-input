@@ -8,6 +8,10 @@ import (
 
 type Vec = gmath.Vec
 
+func vecDistance(v, v2 Vec) float64 {
+	return v.DistanceTo(v2)
+}
+
 func vecDot(v, v2 Vec) float64 {
 	return v.Dot(v2)
 }

@@ -73,8 +73,11 @@ var (
 )
 
 // Touch keys.
+// Experimental: touch keys API is not stable yet!
 var (
-	KeyTouchTap = Key{code: int(touchTap), kind: keyTouch, name: "screen_tap"}
+	KeyTouchTap = Key{code: int(touchTap), kind: keyTouch, name: "touch_tap"}
+
+	KeyTouchDrag = Key{kind: keyTouchDrag, name: "touch_drag"}
 )
 
 // Keyboard keys.

@@ -30,11 +30,16 @@ type System struct {
 	simulatedEvents     []simulatedEvent
 	hasSimulatedActions bool
 
-	touchEnabled bool
-	touchIDs     []ebiten.TouchID
-	touchTapID   ebiten.TouchID
-	touchHasTap  bool
-	touchTapPos  Vec
+	touchEnabled     bool
+	touchHasTap      bool
+	touchJustHadDrag bool
+	touchHasDrag     bool
+	touchDragging    bool
+	touchIDs         []ebiten.TouchID // This is a scratch slice, we don't support multi-touches yet
+	touchActiveID    ebiten.TouchID
+	touchTapPos      Vec
+	touchDragPos     Vec
+	touchStartPos    Vec
 
 	mouseEnabled bool
 	cursorPos    Vec
@@ -58,6 +63,7 @@ func (sys *System) Init(config SystemConfig) {
 
 	if sys.touchEnabled {
 		sys.touchIDs = make([]ebiten.TouchID, 0, 8)
+		sys.touchActiveID = -1
 	}
 }
 
@@ -101,18 +107,45 @@ func (sys *System) Update() {
 
 	if sys.touchEnabled {
 		sys.touchHasTap = false
-		for _, id := range sys.touchIDs {
-			if id == sys.touchTapID && inpututil.IsTouchJustReleased(id) {
+		sys.touchHasDrag = false
+		sys.touchJustHadDrag = false
+		// Track the touch gesture release.
+		// If it was a tap, set a flag.
+		if sys.touchActiveID != -1 && inpututil.IsTouchJustReleased(sys.touchActiveID) {
+			if !sys.touchDragging {
+				x, y := ebiten.TouchPosition(sys.touchActiveID)
+				releasePos := Vec{X: float64(x), Y: float64(y)}
 				sys.touchHasTap = true
-				break
+				sys.touchTapPos = releasePos
+			}
+			sys.touchActiveID = -1
+			sys.touchDragging = false
+		}
+		// Check if this gesture entered a drag mode.
+		// Drag mode gestures will not trigger a tap when released.
+		// Drag events emit a pos delta relative to a start pos every frame.
+		if sys.touchActiveID != -1 {
+			x, y := ebiten.TouchPosition(sys.touchActiveID)
+			currentPos := Vec{X: float64(x), Y: float64(y)}
+			if sys.touchDragging {
+				sys.touchHasDrag = true
+				sys.touchDragPos = currentPos
+			} else {
+				if vecDistance(sys.touchStartPos, currentPos) > 3 {
+					sys.touchDragging = true
+					sys.touchJustHadDrag = true
+					sys.touchHasDrag = true
+					sys.touchDragPos = currentPos
+				}
 			}
 		}
-		if !sys.touchHasTap {
-			sys.touchIDs = inpututil.AppendJustPressedTouchIDs(sys.touchIDs)
+		// Check if a new touch gesture is started.
+		if sys.touchActiveID == -1 {
+			sys.touchIDs = inpututil.AppendJustPressedTouchIDs(sys.touchIDs[:0])
 			for _, id := range sys.touchIDs {
 				x, y := ebiten.TouchPosition(id)
-				sys.touchTapPos = Vec{X: float64(x), Y: float64(y)}
-				sys.touchTapID = id
+				sys.touchStartPos = Vec{X: float64(x), Y: float64(y)}
+				sys.touchActiveID = id
 				break
 			}
 		}
