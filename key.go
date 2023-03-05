@@ -109,10 +109,10 @@ var (
 	KeyR = Key{code: int(ebiten.KeyR), name: "r"}
 	KeyT = Key{code: int(ebiten.KeyT), name: "t"}
 	KeyY = Key{code: int(ebiten.KeyY), name: "y"}
-	KeyU = Key{code: int(ebiten.KeyY), name: "u"}
-	KeyI = Key{code: int(ebiten.KeyY), name: "i"}
-	KeyO = Key{code: int(ebiten.KeyY), name: "o"}
-	KeyP = Key{code: int(ebiten.KeyY), name: "p"}
+	KeyU = Key{code: int(ebiten.KeyU), name: "u"}
+	KeyI = Key{code: int(ebiten.KeyI), name: "i"}
+	KeyO = Key{code: int(ebiten.KeyO), name: "o"}
+	KeyP = Key{code: int(ebiten.KeyP), name: "p"}
 	KeyA = Key{code: int(ebiten.KeyA), name: "a"}
 	KeyS = Key{code: int(ebiten.KeyS), name: "s"}
 	KeyD = Key{code: int(ebiten.KeyD), name: "d"}
