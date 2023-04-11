@@ -77,6 +77,9 @@ var (
 var (
 	KeyTouchTap = Key{code: int(touchTap), kind: keyTouch, name: "touch_tap"}
 
+	// Like a tap, but user was holding that gesture for at least 0.5s.
+	KeyTouchLongTap = Key{code: int(touchLongTap), kind: keyTouch, name: "touch_long_tap"}
+
 	KeyTouchDrag = Key{kind: keyTouchDrag, name: "touch_drag"}
 )
 

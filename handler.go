@@ -41,12 +41,6 @@ func (h *Handler) TouchEventsEnabled() bool {
 	return h.sys.touchEnabled
 }
 
-// TapPos is like CursorPos(), but for the screen tapping.
-// If there is no screen tapping in this frame, it returns false.
-func (h *Handler) TapPos() (Vec, bool) {
-	return h.sys.touchTapPos, h.sys.touchHasTap
-}
-
 // CursorPos returns the current mouse cursor position on the screen.
 func (h *Handler) CursorPos() Vec {
 	return h.sys.cursorPos
@@ -303,6 +297,9 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 		if k.code == int(touchTap) {
 			return h.sys.touchHasTap
 		}
+		if k.code == int(touchLongTap) {
+			return h.sys.touchHasLongTap
+		}
 		return false
 	case keyTouchDrag:
 		return h.sys.touchJustHadDrag
@@ -375,6 +372,9 @@ func (h *Handler) keyIsPressed(k Key) bool {
 	case keyTouch:
 		if k.code == int(touchTap) {
 			return h.sys.touchHasTap
+		}
+		if k.code == int(touchLongTap) {
+			return h.sys.touchHasLongTap
 		}
 		return false
 	case keyTouchDrag:

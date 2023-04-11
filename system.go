@@ -32,6 +32,7 @@ type System struct {
 
 	touchEnabled     bool
 	touchHasTap      bool
+	touchHasLongTap  bool
 	touchJustHadDrag bool
 	touchHasDrag     bool
 	touchDragging    bool
@@ -40,6 +41,7 @@ type System struct {
 	touchTapPos      Vec
 	touchDragPos     Vec
 	touchStartPos    Vec
+	touchTime        float64
 
 	mouseEnabled bool
 	cursorPos    Vec
@@ -67,7 +69,8 @@ func (sys *System) Init(config SystemConfig) {
 	}
 }
 
-func (sys *System) Update() {
+// UpdateWithDelta is like Update(), but it allows you to specify the time delta.
+func (sys *System) UpdateWithDelta(delta float64) {
 	// Rotate the events slices.
 	// Pending events become simulated in this frame.
 	// Re-use the other slice capacity to push new events.
@@ -107,13 +110,18 @@ func (sys *System) Update() {
 
 	if sys.touchEnabled {
 		sys.touchHasTap = false
+		sys.touchHasLongTap = false
 		sys.touchHasDrag = false
 		sys.touchJustHadDrag = false
 		// Track the touch gesture release.
 		// If it was a tap, set a flag.
 		if sys.touchActiveID != -1 && inpututil.IsTouchJustReleased(sys.touchActiveID) {
 			if !sys.touchDragging {
-				sys.touchHasTap = true
+				if sys.touchTime >= 0.5 {
+					sys.touchHasLongTap = true
+				} else {
+					sys.touchHasTap = true
+				}
 				sys.touchTapPos = sys.touchStartPos
 			}
 			sys.touchActiveID = -1
@@ -129,7 +137,8 @@ func (sys *System) Update() {
 				sys.touchHasDrag = true
 				sys.touchDragPos = currentPos
 			} else {
-				if vecDistance(sys.touchStartPos, currentPos) > 3 {
+				sys.touchTime += delta
+				if vecDistance(sys.touchStartPos, currentPos) > 5 {
 					sys.touchDragging = true
 					sys.touchJustHadDrag = true
 					sys.touchHasDrag = true
@@ -144,6 +153,7 @@ func (sys *System) Update() {
 				x, y := ebiten.TouchPosition(id)
 				sys.touchStartPos = Vec{X: float64(x), Y: float64(y)}
 				sys.touchActiveID = id
+				sys.touchTime = 0
 				break
 			}
 		}
@@ -158,6 +168,20 @@ func (sys *System) Update() {
 		x, y := ebiten.Wheel()
 		sys.wheel = Vec{X: x, Y: y}
 	}
+}
+
+// Update reads the input state and updates the information
+// available to all input handlers.
+// Generally, you call this method from your ebiten.Game.Update() method.
+//
+// Since ebitengine uses a fixed timestep architecture,
+// a time delta of 1.0/60.0 is implied.
+// If you need a control over that, use UpdateWithDelta() instead.
+//
+// The time delta mostly needed for things like press gesture
+// detection: we need to calculate when a tap becomes a [long] press.
+func (sys *System) Update() {
+	sys.UpdateWithDelta(1.0 / 60.0)
 }
 
 func (sys *System) updateGamepadInfo(id ebiten.GamepadID, info *gamepadInfo) {

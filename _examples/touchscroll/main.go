@@ -15,6 +15,7 @@ const (
 	ActionUnknown input.Action = iota
 	ActionDrag
 	ActionClick
+	ActionLongClick
 )
 
 func main() {
@@ -31,8 +32,9 @@ type exampleGame struct {
 	pos         input.Vec
 	fallbackPos input.Vec
 
-	numDrags int
-	numTaps  int
+	numDrags    int
+	numTaps     int
+	numLongTaps int
 
 	inputHandler *input.Handler
 	inputSystem  input.System
@@ -53,7 +55,8 @@ func (g *exampleGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func (g *exampleGame) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("use drag gesture to move the star\nnum drags: %d\nnum taps: %d", g.numDrags, g.numTaps))
+	ebitenutil.DebugPrint(screen,
+		fmt.Sprintf("use drag gesture to move the star\nnum drags: %d\nnum taps: %d\nnum long taps: %d", g.numDrags, g.numTaps, g.numLongTaps))
 	ebitenutil.DebugPrintAt(screen, "*", int(g.pos.X), int(g.pos.Y))
 }
 
@@ -67,6 +70,9 @@ func (g *exampleGame) Update() error {
 
 	if g.inputHandler.ActionIsJustPressed(ActionClick) {
 		g.numTaps++
+	}
+	if g.inputHandler.ActionIsJustPressed(ActionLongClick) {
+		g.numLongTaps++
 	}
 
 	if info, ok := g.inputHandler.JustPressedActionInfo(ActionDrag); ok {
@@ -89,8 +95,9 @@ func (g *exampleGame) Init() {
 	g.fallbackPos = g.pos
 
 	keymap := input.Keymap{
-		ActionDrag:  {input.KeyTouchDrag},
-		ActionClick: {input.KeyTouchTap},
+		ActionDrag:      {input.KeyTouchDrag},
+		ActionClick:     {input.KeyTouchTap},
+		ActionLongClick: {input.KeyTouchLongTap},
 	}
 
 	g.inputHandler = g.inputSystem.NewHandler(0, keymap)

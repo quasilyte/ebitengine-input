@@ -26,6 +26,7 @@ type touchCode int
 const (
 	touchUnknown touchCode = iota
 	touchTap
+	touchLongTap
 	touchDrag
 )
 
