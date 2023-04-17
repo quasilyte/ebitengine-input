@@ -16,6 +16,7 @@ var allKeys = []Key{
 	Key8,
 	Key9,
 	KeyA,
+	KeyAlt,
 	KeyB,
 	KeyBackquote,
 	KeyBackspace,

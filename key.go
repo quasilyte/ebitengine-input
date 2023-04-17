@@ -139,6 +139,7 @@ var (
 	KeyCapsLock     = Key{code: int(ebiten.KeyCapsLock), name: "caps_lock"}
 	KeyComma        = Key{code: int(ebiten.KeyComma), name: "comma"}
 	KeyContextMenu  = Key{code: int(ebiten.KeyContextMenu), name: "context_menu"}
+	KeyAlt          = Key{code: int(ebiten.KeyAlt), name: "alt"}
 	KeyControl      = Key{code: int(ebiten.KeyControl), name: "control"}
 	KeyControlLeft  = Key{code: int(ebiten.KeyControlLeft), name: "control_left"}
 	KeyControlRight = Key{code: int(ebiten.KeyControlRight), name: "control_right"}
