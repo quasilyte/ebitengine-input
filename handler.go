@@ -442,6 +442,10 @@ func (h *Handler) simulatedKeyIsPressed(k Key) bool {
 	return h.eventSliceContains(h.sys.simulatedEvents, k)
 }
 
+func (h *Handler) bumperIsActive(v float64) bool {
+	return v >= 0.9
+}
+
 func (h *Handler) isDPadAxisActive(code int, vec Vec) bool {
 	switch ebiten.StandardGamepadButton(code) {
 	case ebiten.StandardGamepadButtonLeftTop:
@@ -473,9 +477,19 @@ func (h *Handler) gamepadKeyIsJustPressed(k Key) bool {
 	if h.gamepadInfo().model == gamepadStandard {
 		return inpututil.IsStandardGamepadButtonJustPressed(ebiten.GamepadID(h.id), ebiten.StandardGamepadButton(k.code))
 	}
-	if h.gamepadInfo().model == gamepadFirefoxXinput && isDPadButton(k.code) {
-		return !h.isDPadAxisActive(k.code, h.getStickPrevVec(6, 7)) &&
-			h.isDPadAxisActive(k.code, h.getStickVec(6, 7))
+	if h.gamepadInfo().model == gamepadFirefoxXinput {
+		if isDPadButton(k.code) {
+			return !h.isDPadAxisActive(k.code, h.getStickPrevVec(6, 7)) &&
+				h.isDPadAxisActive(k.code, h.getStickVec(6, 7))
+		}
+		if k.code == int(ebiten.StandardGamepadButtonFrontBottomLeft) {
+			return !h.bumperIsActive(h.gamepadInfo().prevAxisValues[2]) &&
+				h.bumperIsActive(h.gamepadInfo().axisValues[2])
+		}
+		if k.code == int(ebiten.StandardGamepadButtonFrontBottomRight) {
+			return !h.bumperIsActive(h.gamepadInfo().prevAxisValues[5]) &&
+				h.bumperIsActive(h.gamepadInfo().axisValues[5])
+		}
 	}
 	return inpututil.IsGamepadButtonJustPressed(ebiten.GamepadID(h.id), h.mappedGamepadKey(k.code))
 }
@@ -484,8 +498,16 @@ func (h *Handler) gamepadKeyIsPressed(k Key) bool {
 	if h.gamepadInfo().model == gamepadStandard {
 		return ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(h.id), ebiten.StandardGamepadButton(k.code))
 	}
-	if h.gamepadInfo().model == gamepadFirefoxXinput && isDPadButton(k.code) {
-		return h.isDPadAxisActive(k.code, h.getStickVec(6, 7))
+	if h.gamepadInfo().model == gamepadFirefoxXinput {
+		if isDPadButton(k.code) {
+			return h.isDPadAxisActive(k.code, h.getStickVec(6, 7))
+		}
+		if k.code == int(ebiten.StandardGamepadButtonFrontBottomLeft) {
+			return h.bumperIsActive(h.gamepadInfo().axisValues[2])
+		}
+		if k.code == int(ebiten.StandardGamepadButtonFrontBottomRight) {
+			return h.bumperIsActive(h.gamepadInfo().axisValues[5])
+		}
 	}
 	return ebiten.IsGamepadButtonPressed(ebiten.GamepadID(h.id), h.mappedGamepadKey(k.code))
 }

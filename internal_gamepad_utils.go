@@ -53,6 +53,10 @@ func firefoxXinputToXbox(b ebiten.StandardGamepadButton) ebiten.GamepadButton {
 		return 6
 	case ebiten.StandardGamepadButtonCenterRight:
 		return 7
+	case ebiten.StandardGamepadButtonRightStick:
+		return 10
+	case ebiten.StandardGamepadButtonLeftStick:
+		return 9
 	default:
 		return ebiten.GamepadButton(b)
 	}

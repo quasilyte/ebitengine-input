@@ -195,18 +195,7 @@ func (sys *System) updateGamepadInfo(id ebiten.GamepadID, info *gamepadInfo) {
 	case gamepadFirefoxXinput:
 		copy(info.prevAxisValues[:], info.axisValues[:])
 		for axis := 0; axis < info.axisCount; axis++ {
-			axisKey := axis
-			switch ebiten.StandardGamepadAxis(axis) {
-			case ebiten.StandardGamepadAxisLeftStickHorizontal:
-				axisKey = 0
-			case ebiten.StandardGamepadAxisLeftStickVertical:
-				axisKey = 1
-			case ebiten.StandardGamepadAxisRightStickHorizontal:
-				axisKey = 3
-			case ebiten.StandardGamepadAxisRightStickVertical:
-				axisKey = 4
-			}
-			v := ebiten.GamepadAxisValue(id, axisKey)
+			v := ebiten.GamepadAxisValue(id, axis)
 			info.axisValues[axis] = v
 		}
 	}
