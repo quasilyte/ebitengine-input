@@ -544,12 +544,22 @@ func (h *Handler) gamepadStickIsJustPressed(code stickCode, axis1, axis2 ebiten.
 func (h *Handler) getStickAxes(code stickCode) (int, int) {
 	var axis1 int
 	var axis2 int
-	if code == stickLeft {
-		axis1 = int(ebiten.StandardGamepadAxisLeftStickHorizontal)
-		axis2 = int(ebiten.StandardGamepadAxisLeftStickVertical)
+	if h.gamepadInfo().model == gamepadFirefoxXinput {
+		if code == stickLeft {
+			axis1 = 0
+			axis2 = 1
+		} else {
+			axis1 = 3
+			axis2 = 4
+		}
 	} else {
-		axis1 = int(ebiten.StandardGamepadAxisRightStickHorizontal)
-		axis2 = int(ebiten.StandardGamepadAxisRightStickVertical)
+		if code == stickLeft {
+			axis1 = int(ebiten.StandardGamepadAxisLeftStickHorizontal)
+			axis2 = int(ebiten.StandardGamepadAxisLeftStickVertical)
+		} else {
+			axis1 = int(ebiten.StandardGamepadAxisRightStickHorizontal)
+			axis2 = int(ebiten.StandardGamepadAxisRightStickVertical)
+		}
 	}
 	return axis1, axis2
 }
