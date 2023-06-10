@@ -204,10 +204,18 @@ func (sys *System) updateGamepadInfo(id ebiten.GamepadID, info *gamepadInfo) {
 // NewHandler creates a handler associated with player/device ID.
 // IDs should start with 0 with a step of 1.
 // So, NewHandler(0, ...) then NewHandler(1, ...).
+//
+// If you want to configure the handler further, use Handler fields/methods
+// to do that. For example, see Handler.GamepadDeadzone.
 func (sys *System) NewHandler(playerID uint8, keymap Keymap) *Handler {
 	return &Handler{
 		id:     playerID,
 		keymap: keymap,
 		sys:    sys,
+
+		// My gamepads may have false positive activations with a
+		// value lower than 0.03; we're using 0.055 here just to be safe.
+		// Various sources indicate that a value of ~0.05 is optimal for a default.
+		GamepadDeadzone: 0.055,
 	}
 }

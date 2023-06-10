@@ -20,6 +20,22 @@ type Handler struct {
 	id     uint8
 	keymap Keymap
 	sys    *System
+
+	// GamepadDeadzone is the magnitude of a controller stick movements
+	// the handler can receive before registering it as an input.
+	//
+	// The default value is 0.055, meaning the slight movements are ignored.
+	// A value of 0.5 means about half the axis is ignored.
+	//
+	// The default value is good for a new/responsive controller.
+	// For more worn out controllers or flaky sticks, a higher value may be required.
+	//
+	// This parameter can be adjusted on the fly, so you're encouraged to
+	// give a player a way to configure a deadzone that will fit their controller.
+	//
+	// Note that this is a per-handler option.
+	// Different gamepads/devices can have different deadzone values.
+	GamepadDeadzone float64
 }
 
 // GamepadConnected reports whether the gamepad associated with this handler is connected.
@@ -576,10 +592,7 @@ func (h *Handler) gamepadStickMotionIsPressed(code stickCode) bool {
 func (h *Handler) gamepadStickMotionIsActive(vec Vec) bool {
 	// Some gamepads could register a slight movement all the time,
 	// even if the stick is in its home position.
-	// This min sensitivity should probably be configurable.
-	// My gamepads may have false positive activations with a
-	// value lower than 0.03; we're using 0.055 here just to be safe.
-	return math.Abs(vec.X)+math.Abs(vec.Y) >= 0.055
+	return math.Abs(vec.X)+math.Abs(vec.Y) >= h.GamepadDeadzone
 }
 
 func (h *Handler) gamepadStickIsPressed(code stickCode, axis1, axis2 ebiten.StandardGamepadAxis) bool {
