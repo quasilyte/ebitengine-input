@@ -411,11 +411,19 @@ func (h *Handler) keyIsPressed(k Key) bool {
 	case keyMouseWithShift:
 		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
 			ebiten.IsMouseButtonPressed(ebiten.MouseButton(k.code))
+	case keyMouseWithCtrlShift:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			ebiten.IsMouseButtonPressed(ebiten.MouseButton(k.code))
 	case keyKeyboardWithCtrl:
 		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
 			ebiten.IsKeyPressed(ebiten.Key(k.code))
 	case keyKeyboardWithShift:
 		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			ebiten.IsKeyPressed(ebiten.Key(k.code))
+	case keyKeyboardWithCtrlShift:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			ebiten.IsKeyPressed(ebiten.KeyShift) &&
 			ebiten.IsKeyPressed(ebiten.Key(k.code))
 	default:
 		return ebiten.IsKeyPressed(ebiten.Key(k.code))

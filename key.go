@@ -39,7 +39,7 @@ func KeyWithModifier(k Key, mod KeyModifier) Key {
 		case ModControlShift:
 			k.kind = keyKeyboardWithCtrlShift
 		default:
-			panic("unexpected key modifier")
+			panic("unexpected keyboard key modifier")
 		}
 	case keyMouse:
 		switch mod {
@@ -50,7 +50,7 @@ func KeyWithModifier(k Key, mod KeyModifier) Key {
 		case ModControlShift:
 			k.kind = keyMouseWithCtrlShift
 		default:
-			panic("unexpected key modifier")
+			panic("unexpected mouse key modifier")
 		}
 	default:
 		panic("only keyboard and mouse keys support modifiers")
