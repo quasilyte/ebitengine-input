@@ -30,6 +30,7 @@ Some games that were built with this library:
 * [Decipherism](https://quasilyte.itch.io/decipherism)
 * [Retrowave City](https://quasilyte.itch.io/retrowave-city)
 * [Autotanks](https://quasilyte.itch.io/autotanks)
+* [Sinecord](https://quasilyte.itch.io/sinecord)
 * [Learn Georgian](https://quasilyte.itch.io/georgian-trainer)
 
 ### Installation
