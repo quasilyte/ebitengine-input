@@ -133,6 +133,7 @@ var (
 	KeyN = Key{code: int(ebiten.KeyN), name: "n"}
 	KeyM = Key{code: int(ebiten.KeyM), name: "m"}
 
+	KeyBackslash    = Key{code: int(ebiten.KeyBackslash), name: "backslash"}
 	KeyBackspace    = Key{code: int(ebiten.KeyBackspace), name: "backspace"}
 	KeyBracketLeft  = Key{code: int(ebiten.KeyBracketLeft), name: "bracket_left"}
 	KeyBracketRight = Key{code: int(ebiten.KeyBracketRight), name: "bracket_right"}
@@ -140,6 +141,8 @@ var (
 	KeyComma        = Key{code: int(ebiten.KeyComma), name: "comma"}
 	KeyContextMenu  = Key{code: int(ebiten.KeyContextMenu), name: "context_menu"}
 	KeyAlt          = Key{code: int(ebiten.KeyAlt), name: "alt"}
+	KeyAltLeft      = Key{code: int(ebiten.KeyAltLeft), name: "alt_left"}
+	KeyAltRight     = Key{code: int(ebiten.KeyAltRight), name: "alt_right"}
 	KeyControl      = Key{code: int(ebiten.KeyControl), name: "control"}
 	KeyControlLeft  = Key{code: int(ebiten.KeyControlLeft), name: "control_left"}
 	KeyControlRight = Key{code: int(ebiten.KeyControlRight), name: "control_right"}
