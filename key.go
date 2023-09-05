@@ -16,6 +16,35 @@ type Key struct {
 	name string
 }
 
+func (k Key) String() string {
+	ctrlMod := false
+	shiftMod := false
+	switch k.kind {
+	case keyKeyboardWithCtrlShift:
+		ctrlMod = true
+		shiftMod = true
+	case keyKeyboardWithCtrl:
+		ctrlMod = true
+	case keyKeyboardWithShift:
+		shiftMod = true
+	case keyMouseWithCtrlShift:
+		ctrlMod = true
+		shiftMod = true
+	case keyMouseWithCtrl:
+		ctrlMod = true
+	case keyMouseWithShift:
+		shiftMod = true
+	}
+	name := k.name
+	if shiftMod {
+		name = "shift+" + name
+	}
+	if ctrlMod {
+		name = "ctrl+" + name
+	}
+	return name
+}
+
 type KeyModifier uint8
 
 const (

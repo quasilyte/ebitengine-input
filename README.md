@@ -14,6 +14,7 @@ A [Godot](https://godotengine.org/)-inspired action input handling system for [E
 * Bind more than one key to a single action
 * Bind keys with modifiers to a single action (like `ctrl+c`)
 * Simplified multi-input handling (like multiple gamepads)
+* Implements keybind scanning (see [remap](_examples/remap/main.go) example)
 * Simplified keymap loading from a file (see [configfile](_examples/configfile/main.go) example)
 * Implements simulated/virtual input events (see [simulateinput](_examples/simulateinput/main.go) example)
 * No extra dependencies (apart from the [Ebitengine](https://github.com/hajimehoshi/ebiten) of course)
