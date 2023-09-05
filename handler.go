@@ -38,6 +38,11 @@ type Handler struct {
 	GamepadDeadzone float64
 }
 
+// Remap changes the handler keymap while keeping all other settings the same.
+func (h *Handler) Remap(keymap Keymap) {
+	h.keymap = keymap
+}
+
 // GamepadConnected reports whether the gamepad associated with this handler is connected.
 // The gamepad ID is the handler ID used during the handler creation.
 //
@@ -137,51 +142,38 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 	gamepadConnected := h.GamepadConnected()
 	result := make([]string, 0, len(keys))
 	for _, k := range keys {
-		enabled := true
-		ctrlMod := false
-		shiftMod := false
-		switch k.kind {
-		case keyKeyboardWithCtrlShift:
-			ctrlMod = true
-			shiftMod = true
-			enabled = mask&KeyboardDevice != 0
-		case keyKeyboardWithCtrl:
-			ctrlMod = true
-			enabled = mask&KeyboardDevice != 0
-		case keyKeyboardWithShift:
-			shiftMod = true
-			enabled = mask&KeyboardDevice != 0
-		case keyKeyboard:
-			enabled = mask&KeyboardDevice != 0
-		case keyMouseWithCtrlShift:
-			ctrlMod = true
-			shiftMod = true
-			enabled = mask&MouseDevice != 0
-		case keyMouseWithCtrl:
-			ctrlMod = true
-			enabled = mask&MouseDevice != 0
-		case keyMouseWithShift:
-			shiftMod = true
-			enabled = mask&MouseDevice != 0
-		case keyMouse:
-			enabled = mask&MouseDevice != 0
-		case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick, keyGamepadStickMotion:
-			enabled = gamepadConnected && (mask&GamepadDevice != 0)
-		case keyTouch, keyTouchDrag:
-			enabled = h.sys.touchEnabled && (mask&TouchDevice != 0)
+		if !h.keyIsEnabled(k, mask, gamepadConnected) {
+			continue
 		}
-		if enabled {
-			name := k.name
-			if shiftMod {
-				name = "shift+" + name
-			}
-			if ctrlMod {
-				name = "ctrl+" + name
-			}
-			result = append(result, name)
-		}
+		result = append(result, k.String())
 	}
 	return result
+}
+
+func (h *Handler) keyIsEnabled(k Key, mask DeviceKind, gamepadConnected bool) bool {
+	switch k.kind {
+	case keyKeyboardWithCtrlShift:
+		return mask&KeyboardDevice != 0
+	case keyKeyboardWithCtrl:
+		return mask&KeyboardDevice != 0
+	case keyKeyboardWithShift:
+		return mask&KeyboardDevice != 0
+	case keyKeyboard:
+		return mask&KeyboardDevice != 0
+	case keyMouseWithCtrlShift:
+		return mask&MouseDevice != 0
+	case keyMouseWithCtrl:
+		return mask&MouseDevice != 0
+	case keyMouseWithShift:
+		return mask&MouseDevice != 0
+	case keyMouse:
+		return mask&MouseDevice != 0
+	case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick, keyGamepadStickMotion:
+		return gamepadConnected && (mask&GamepadDevice != 0)
+	case keyTouch, keyTouchDrag:
+		return h.sys.touchEnabled && (mask&TouchDevice != 0)
+	}
+	return true
 }
 
 // JustPressedActionInfo is like ActionIsJustPressed, but with more information.
@@ -247,7 +239,7 @@ func (h *Handler) PressedActionInfo(action Action) (EventInfo, bool) {
 	return EventInfo{}, false
 }
 
-// ActionIsJustPressed is like ebitenutil.IsKeyJustPressed, but operates
+// ActionIsJustPressed is like inpututil.IsKeyJustPressed, but operates
 // on the action level and works with any kinds of "keys".
 // It returns true if any of the keys bound to the action was pressed during this frame.
 func (h *Handler) ActionIsJustPressed(action Action) bool {
@@ -259,7 +251,7 @@ func (h *Handler) ActionIsJustPressed(action Action) bool {
 		if len(h.sys.simulatedEvents) != 0 {
 			// We want to avoid a situation when simulated input
 			// things that the key is still being pressed and then
-			// receive a real input from the bottom of ebitenutil that
+			// receive a real input from the bottom of inpututil that
 			// this key was actually "just pressed". To avoid that,
 			// we skip checking the real input if simulated input still
 			// holds that button down. This is why we need a bool3 here.
