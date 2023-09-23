@@ -91,6 +91,8 @@ var allKeys = []Key{
 	KeyLeft,
 	KeyM,
 	KeyMinus,
+	KeyMouseBack,
+	KeyMouseForward,
 	KeyMouseLeft,
 	KeyMouseMiddle,
 	KeyMouseRight,

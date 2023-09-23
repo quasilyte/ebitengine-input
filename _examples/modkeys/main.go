@@ -125,7 +125,7 @@ func drawLine(dst *ebiten.Image, pos1, pos2 input.Vec, c color.RGBA) {
 	drawOptions.GeoM.Scale(length, 2)
 	drawOptions.GeoM.Rotate(math.Atan2(y2-y1, x2-x1))
 	drawOptions.GeoM.Translate(x1, y1)
-	drawOptions.ColorM.ScaleWithColor(&c)
+	drawOptions.ColorScale.Scale(float32(c.R), float32(c.G), float32(c.B), float32(c.A))
 
 	dst.DrawImage(whitePixel, &drawOptions)
 }

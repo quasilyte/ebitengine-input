@@ -96,9 +96,11 @@ var (
 
 // Mouse keys.
 var (
-	KeyMouseLeft   = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouse, name: "mouse_left_button"}
-	KeyMouseRight  = Key{code: int(ebiten.MouseButtonRight), kind: keyMouse, name: "mouse_right_button"}
-	KeyMouseMiddle = Key{code: int(ebiten.MouseButtonMiddle), kind: keyMouse, name: "mouse_middle_button"}
+	KeyMouseLeft    = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouse, name: "mouse_left_button"}
+	KeyMouseRight   = Key{code: int(ebiten.MouseButtonRight), kind: keyMouse, name: "mouse_right_button"}
+	KeyMouseMiddle  = Key{code: int(ebiten.MouseButtonMiddle), kind: keyMouse, name: "mouse_middle_button"}
+	KeyMouseBack    = Key{code: int(ebiten.MouseButton3), kind: keyMouse, name: "mouse_back_button"}
+	KeyMouseForward = Key{code: int(ebiten.MouseButton4), kind: keyMouse, name: "mouse_forward_button"}
 )
 
 // Touch keys.
