@@ -134,15 +134,20 @@ func (h *Handler) EmitEvent(e SimulatedAction) {
 // Keys with modifiers will have them listed too.
 // Modifiers are separated by "+".
 // A "k" keyboard key with ctrl modifier will have a "ctrl+k" name.
+//
+// Note: this function doesn't check whether some input device is available or not.
+// For example, if mask contains a TouchDevice, but touch actions are not
+// available on a machine, touch-related keys will still be returned.
+// It's up to the caller to specify a correct device mask.
+// Using a AnyDevice mask would return all mapped keys for the action.
 func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 	keys, ok := h.keymap[action]
 	if !ok {
 		return nil
 	}
-	gamepadConnected := h.GamepadConnected()
 	result := make([]string, 0, len(keys))
 	for _, k := range keys {
-		if !h.keyIsEnabled(k, mask, gamepadConnected) {
+		if !h.keyIsEnabled(k, mask) {
 			continue
 		}
 		result = append(result, k.String())
@@ -150,7 +155,7 @@ func (h *Handler) ActionKeyNames(action Action, mask DeviceKind) []string {
 	return result
 }
 
-func (h *Handler) keyIsEnabled(k Key, mask DeviceKind, gamepadConnected bool) bool {
+func (h *Handler) keyIsEnabled(k Key, mask DeviceKind) bool {
 	switch k.kind {
 	case keyKeyboardWithCtrlShift:
 		return mask&KeyboardDevice != 0
@@ -169,9 +174,9 @@ func (h *Handler) keyIsEnabled(k Key, mask DeviceKind, gamepadConnected bool) bo
 	case keyMouse:
 		return mask&MouseDevice != 0
 	case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick, keyGamepadStickMotion:
-		return gamepadConnected && (mask&GamepadDevice != 0)
+		return mask&GamepadDevice != 0
 	case keyTouch, keyTouchDrag:
-		return h.sys.touchEnabled && (mask&TouchDevice != 0)
+		return mask&TouchDevice != 0
 	}
 	return true
 }
