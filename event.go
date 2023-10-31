@@ -44,6 +44,8 @@ type SimulatedAction struct {
 // A drag event, for instance, will store the "dragging from" location there.
 //
 // Duration carries the key press duration if available.
+// Duration specifies how long the key has been pressed in ticks same as inpututil.KeyPressDuration.
+// Duration for  key press with modifiers it will return the lowest duration of all key presses.
 // Use HasDuration() predicate to know whether there is a duration associated
 // with the event to distinguish between 0 duration and lack of duration info.
 type EventInfo struct {

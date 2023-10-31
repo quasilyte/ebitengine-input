@@ -382,6 +382,8 @@ func (h *Handler) getKeyPos(k Key) Vec {
 	return result
 }
 
+// getKeyPressDuration returns how long the key has been pressed in ticks same as inpututil.KeyPressDuration.
+// When looking at a key press with modifiers it will return the lowest duration of all key presses.
 func (h *Handler) getKeyPressDuration(k Key) int {
 	switch k.kind {
 	case keyKeyboardWithShift:
