@@ -239,6 +239,8 @@ func (h *Handler) PressedActionInfo(action Action) (EventInfo, bool) {
 		info.hasPos = keyHasPos(k.kind)
 		info.Pos = h.getKeyPos(k)
 		info.StartPos = h.getKeyStartPos(k)
+		info.hasDuration = keyHasDuration(k.kind)
+		info.Duration = h.getKeyPressDuration(k)
 		return info, true
 	}
 	return EventInfo{}, false
@@ -378,6 +380,27 @@ func (h *Handler) getKeyPos(k Key) Vec {
 		result = h.getStickVec(axis1, axis2)
 	}
 	return result
+}
+
+// getKeyPressDuration returns how long the key has been pressed in ticks same as inpututil.KeyPressDuration.
+// When looking at a key press with modifiers it will return the lowest duration of all key presses.
+func (h *Handler) getKeyPressDuration(k Key) int {
+	switch k.kind {
+	case keyKeyboardWithShift:
+		return minOf(inpututil.KeyPressDuration(ebiten.Key(k.code)), inpututil.KeyPressDuration(ebiten.KeyShift))
+	case keyKeyboardWithCtrl:
+		return minOf(inpututil.KeyPressDuration(ebiten.Key(k.code)), inpututil.KeyPressDuration(ebiten.KeyControl))
+	case keyKeyboardWithCtrlShift:
+		return minOf(
+			inpututil.KeyPressDuration(ebiten.Key(k.code)),
+			minOf(
+				inpututil.KeyPressDuration(ebiten.KeyShift),
+				inpututil.KeyPressDuration(ebiten.KeyControl)))
+	case keyKeyboard:
+		return inpututil.KeyPressDuration(ebiten.Key(k.code))
+	}
+
+	return 0
 }
 
 func (h *Handler) keyIsPressed(k Key) bool {

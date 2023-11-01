@@ -42,10 +42,18 @@ type SimulatedAction struct {
 //
 // StartPos is only set for a few events where it makes sense.
 // A drag event, for instance, will store the "dragging from" location there.
+//
+// Duration carries the key press duration if available.
+// Duration specifies how long the key has been pressed in ticks same as inpututil.KeyPressDuration.
+// Duration for  key press with modifiers it will return the lowest duration of all key presses.
+// Use HasDuration() predicate to know whether there is a duration associated
+// with the event to distinguish between 0 duration and lack of duration info.
 type EventInfo struct {
-	kind   keyKind
-	hasPos bool
+	kind        keyKind
+	hasPos      bool
+	hasDuration bool
 
+	Duration int
 	Pos      Vec
 	StartPos Vec
 }
@@ -53,6 +61,10 @@ type EventInfo struct {
 // HasPos reports whether this event has a position associated with it.
 // Use Pos field to get the pos value.
 func (e EventInfo) HasPos() bool { return e.hasPos }
+
+// HasDuration reports whether this event has a press duration associated with it.
+// Use Duration field to get the press duration value.
+func (e EventInfo) HasDuration() bool { return e.hasDuration }
 
 // IsTouchEvent reports whether this event was triggered by a screen touch device.
 func (e EventInfo) IsTouchEvent() bool { return e.kind == keyTouch }
