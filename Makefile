@@ -14,4 +14,5 @@ lint:
 	$(GOPATH_DIR)/bin/golangci-lint run --build-tags example ./_examples/modkeys
 	$(GOPATH_DIR)/bin/golangci-lint run --build-tags example ./_examples/scroll
 	$(GOPATH_DIR)/bin/golangci-lint run --build-tags example ./_examples/simulateinput
+	$(GOPATH_DIR)/bin/golangci-lint run --build-tags example ./_examples/action_released
 	@echo "everything is OK"
