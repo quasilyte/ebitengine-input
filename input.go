@@ -23,21 +23,28 @@ func (m Keymap) Clone() Keymap {
 	return cloned
 }
 
-// MergeKeymaps merges a list of maps into one.
+// uniqueKeys returns a list of [Key]s that do not repeat.
+func uniqueKeys(keys []Key) (unique []Key) {
+	known := make(map[Key]struct{})
+	var ok bool
+	for _, key := range keys {
+		if _, ok = known[key]; ok {
+			continue // skip
+		}
+		known[key] = struct{}{}
+		unique = append(unique, key)
+	}
+	return unique
+}
+
+// MergeKeymaps merges a list of [Keymap]s into one.
 // Given maps are not modified.
 // Resulting map contains no references to given maps.
 func MergeKeymaps(maps ...Keymap) Keymap {
 	merged := make(Keymap)
 	for _, m := range maps {
 		for k, list := range m {
-			existing, ok := merged[k]
-			if !ok {
-				clonedList := make([]Key, len(list))
-				copy(clonedList, list)
-				merged[k] = clonedList
-				continue
-			}
-			merged[k] = append(existing, list...)
+			merged[k] = uniqueKeys(append(merged[k], list...))
 		}
 	}
 	return merged
