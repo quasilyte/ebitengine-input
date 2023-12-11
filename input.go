@@ -23,6 +23,26 @@ func (m Keymap) Clone() Keymap {
 	return cloned
 }
 
+// MergeKeymaps merges a list of maps into one.
+// Given maps are not modified.
+// Resulting map contains no references to given maps.
+func MergeKeymaps(maps ...Keymap) Keymap {
+	merged := make(Keymap)
+	for _, m := range maps {
+		for k, list := range m {
+			existing, ok := merged[k]
+			if !ok {
+				clonedList := make([]Key, len(list))
+				copy(clonedList, list)
+				merged[k] = clonedList
+				continue
+			}
+			merged[k] = append(existing, list...)
+		}
+	}
+	return merged
+}
+
 // DeviceKind is used as a bit mask to select the enabled input devices.
 // See constants like KeyboardInput and GamepadInput.
 // Combine them like KeyboardInput|GamepadInput to get a bit mask that includes multiple entries.
