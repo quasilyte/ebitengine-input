@@ -23,28 +23,37 @@ func (m Keymap) Clone() Keymap {
 	return cloned
 }
 
-// uniqueKeys returns a list of [Key]s that do not repeat.
-func uniqueKeys(keys []Key) (unique []Key) {
-	known := make(map[Key]struct{})
-	var ok bool
-	for _, key := range keys {
-		if _, ok = known[key]; ok {
-			continue // skip
-		}
-		known[key] = struct{}{}
-		unique = append(unique, key)
-	}
-	return unique
-}
-
-// MergeKeymaps merges a list of [Keymap]s into one.
+// MergeKeymaps merges a list of keymaps into one.
+//
 // Given maps are not modified.
-// Resulting map contains no references to given maps.
+// The resulting keymap contains no references to input keymaps.
+//
+// Any key duplicates for a single action are ignored, therefore:
+//
+//	{Action1: [KeyA, KeyB]} + {Action1: [KeyC, KeyB]} = {Action1: [KeyA, KeyB, KeyC]}
+//
+// The keys order depends on the input keymaps arguments order.
+// Keymaps with keys of higher priorities should go first.
+// So, if you have a keyboardKeymap and gamepadKeymap keymaps,
+// passing gamepadKeymap before keyboardKeymap would make the gamepad key
+// binds take priority: MergeKeymaps(gamepadKeymap, keyboardKeymap).
 func MergeKeymaps(maps ...Keymap) Keymap {
+	type keyCombination struct {
+		a Action
+		k Key
+	}
+	keyCombinations := make(map[keyCombination]struct{})
 	merged := make(Keymap)
 	for _, m := range maps {
-		for action, keys := range m {
-			merged[action] = uniqueKeys(append(merged[action], keys...))
+		for a, keys := range m {
+			for _, k := range keys {
+				ck := keyCombination{a, k}
+				if _, ok := keyCombinations[ck]; ok {
+					continue
+				}
+				keyCombinations[ck] = struct{}{}
+				merged[a] = append(merged[a], k)
+			}
 		}
 	}
 	return merged

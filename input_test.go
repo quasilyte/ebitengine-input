@@ -1,36 +1,159 @@
 package input
 
-import "testing"
-
-func TestUniqueKeys(t *testing.T) {
-	unique := uniqueKeys([]Key{KeyUp, KeyUp, KeyUp})
-	if len(unique) != 1 {
-		t.Fatal("duplicates were not removed")
-	}
-	if unique[0] != KeyUp {
-		t.Fatal("unexpected key")
-	}
-}
+import (
+	"fmt"
+	"reflect"
+	"testing"
+)
 
 func TestKeymapMerge(t *testing.T) {
-	keyboardKeyMap := Keymap{
-		3: {KeyDown, KeyS},
-		4: {KeySpace},
-		5: {KeyShift},
+	tests := []struct {
+		keymaps []Keymap
+		want    Keymap
+	}{
+		// A simple case with 4 keymaps with no duplicates.
+		{
+			[]Keymap{
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+				{
+					4: {KeyMouseLeft},
+					5: {KeyMouseRight},
+				},
+				{
+					6: {KeyMouseRight},
+				},
+				{
+					7: {KeyGamepadA, KeyGamepadB},
+					3: {KeyGamepadA, KeyGamepadB},
+				},
+				{
+					3: {KeyGamepadL1},
+					6: {KeyGamepadL2},
+				},
+			},
+			Keymap{
+				3: {KeyDown, KeyS, KeyGamepadA, KeyGamepadB, KeyGamepadL1},
+				4: {KeySpace, KeyMouseLeft},
+				5: {KeyShift, KeyMouseRight},
+				6: {KeyMouseRight, KeyGamepadL2},
+				7: {KeyGamepadA, KeyGamepadB},
+			},
+		},
+
+		{
+			[]Keymap{
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+				{
+					4: {KeyMouseLeft, KeySpace}, // extra duplicate
+					5: {KeyMouseRight},
+				},
+			},
+			Keymap{
+				3: {KeyDown, KeyS},
+				4: {KeySpace, KeyMouseLeft},
+				5: {KeyShift, KeyMouseRight},
+			},
+		},
+
+		// Merging with 3 keymaps, checking that the priority is preserved.
+		{
+			[]Keymap{
+				{
+					3: {KeyGamepadA},
+					4: {KeySpace, KeyMouseLeft},
+				},
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+				{
+					4: {KeyMouseLeft, KeySpace},
+					5: {KeyMouseRight},
+				},
+			},
+			Keymap{
+				3: {KeyGamepadA, KeyDown, KeyS},
+				4: {KeySpace, KeyMouseLeft},
+				5: {KeyShift, KeyMouseRight},
+			},
+		},
+
+		// Merging with an empty keymap.
+		{
+			[]Keymap{
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+				{},
+			},
+			Keymap{
+				3: {KeyDown, KeyS},
+				4: {KeySpace},
+				5: {KeyShift},
+			},
+		},
+
+		// Merging identical keymaps.
+		{
+			[]Keymap{
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+			},
+			Keymap{
+				3: {KeyDown, KeyS},
+				4: {KeySpace},
+				5: {KeyShift},
+			},
+		},
+
+		// Merging a single map results in the same keymap.
+		{
+			[]Keymap{
+				{
+					3: {KeyDown, KeyS},
+					4: {KeySpace},
+					5: {KeyShift},
+				},
+			},
+			Keymap{
+				3: {KeyDown, KeyS},
+				4: {KeySpace},
+				5: {KeyShift},
+			},
+		},
 	}
 
-	mouseKeymap := Keymap{
-		4: {KeyMouseLeft, KeySpace}, // extra duplicate
-		5: {KeyMouseRight},
-	}
-
-	merged := MergeKeymaps(keyboardKeyMap, mouseKeymap)
-
-	if l := len(merged); l != 3 {
-		t.Fatalf("key map contains%d elements instead of expected 3", l)
-	}
-
-	if l := len(merged[4]); l != 2 {
-		t.Fatalf("duplicate was not removed: %+v", merged[4])
+	for i := range tests {
+		test := tests[i]
+		t.Run(fmt.Sprintf("test%d", i), func(t *testing.T) {
+			have := MergeKeymaps(test.keymaps...)
+			if !reflect.DeepEqual(have, test.want) {
+				t.Fatalf("invalid merge results:\nhave: %#v\nwant: %#v\ninputs: #%v", have, test.want, test.keymaps)
+			}
+		})
 	}
 }
