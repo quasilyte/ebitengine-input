@@ -43,8 +43,8 @@ func uniqueKeys(keys []Key) (unique []Key) {
 func MergeKeymaps(maps ...Keymap) Keymap {
 	merged := make(Keymap)
 	for _, m := range maps {
-		for k, list := range m {
-			merged[k] = uniqueKeys(append(merged[k], list...))
+		for action, keys := range m {
+			merged[action] = uniqueKeys(append(merged[action], keys...))
 		}
 	}
 	return merged
