@@ -23,6 +23,33 @@ func (m Keymap) Clone() Keymap {
 	return cloned
 }
 
+// uniqueKeys returns a list of [Key]s that do not repeat.
+func uniqueKeys(keys []Key) (unique []Key) {
+	known := make(map[Key]struct{})
+	var ok bool
+	for _, key := range keys {
+		if _, ok = known[key]; ok {
+			continue // skip
+		}
+		known[key] = struct{}{}
+		unique = append(unique, key)
+	}
+	return unique
+}
+
+// MergeKeymaps merges a list of [Keymap]s into one.
+// Given maps are not modified.
+// Resulting map contains no references to given maps.
+func MergeKeymaps(maps ...Keymap) Keymap {
+	merged := make(Keymap)
+	for _, m := range maps {
+		for action, keys := range m {
+			merged[action] = uniqueKeys(append(merged[action], keys...))
+		}
+	}
+	return merged
+}
+
 // DeviceKind is used as a bit mask to select the enabled input devices.
 // See constants like KeyboardInput and GamepadInput.
 // Combine them like KeyboardInput|GamepadInput to get a bit mask that includes multiple entries.
