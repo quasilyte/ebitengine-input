@@ -121,6 +121,46 @@ func (h *Handler) EmitEvent(e SimulatedAction) {
 	})
 }
 
+// AnyKeyJustPressed reports whether any action key was just pressed.
+// It checks for keyboard keys, gamepad buttons and touch taps.
+//
+// This function is useful for "press any key" contexts where you
+// don't care which key was used to trigger the event.
+//
+// This method does respects simulated inputs.
+//
+// This method does not support gamepad pseudo-keys like KeyGamepadLStickUp.
+func (h *Handler) AnyKeyJustPressed() bool {
+	h.sys.keySlice = inpututil.AppendJustPressedKeys(h.sys.keySlice[:0])
+	if len(h.sys.keySlice) != 0 {
+		return true
+	}
+
+	if len(h.sys.gamepadIDs) != 0 {
+		h.sys.gamepadKeySlice = inpututil.AppendJustPressedGamepadButtons(ebiten.GamepadID(h.id), h.sys.gamepadKeySlice[:0])
+		if len(h.sys.gamepadKeySlice) != 0 {
+			return true
+		}
+	}
+
+	if h.sys.touchEnabled {
+		if h.sys.touchHasTap || h.sys.touchHasLongTap {
+			return true
+		}
+	}
+
+	if h.sys.hasSimulatedActions {
+		for _, e := range h.sys.simulatedEvents {
+			if keyNeedID(e.keyKind) && e.playerID != h.id {
+				continue
+			}
+			return true
+		}
+	}
+
+	return false
+}
+
 // ActionKeyNames returns a list of key names associated by this action.
 //
 // It filters the results by a given input device mask.

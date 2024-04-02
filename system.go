@@ -25,6 +25,10 @@ type System struct {
 	gamepadIDs  []ebiten.GamepadID
 	gamepadInfo []gamepadInfo
 
+	// This is a scratch slice for ebiten.AppendPressedKeys operation.
+	keySlice        []ebiten.Key
+	gamepadKeySlice []ebiten.GamepadButton
+
 	pendingEvents       []simulatedEvent
 	prevSimulatedEvents []simulatedEvent
 	simulatedEvents     []simulatedEvent
@@ -57,6 +61,9 @@ type SystemConfig struct {
 }
 
 func (sys *System) Init(config SystemConfig) {
+	sys.keySlice = make([]ebiten.Key, 0, 4)
+	sys.gamepadKeySlice = make([]ebiten.GamepadButton, 0, 2)
+
 	sys.touchEnabled = config.DevicesEnabled&TouchDevice != 0
 	sys.mouseEnabled = config.DevicesEnabled&MouseDevice != 0
 
