@@ -254,6 +254,30 @@ input.KeyWithModifier(input.KeyC, input.ModControl)
 
 See an [example](_examples/basic/main.go) for a complete source code.
 
+### Enabling gmath
+
+This library can be used with and without [gmath](https://github.com/quasilyte/gmath) dependency.
+
+By default, it uses its own `Vec` implementation which is really just an `{X, Y float64}` wrapper without any methods. It's expected that you convert that simple type into your app's native vector2D type.
+
+But if you happen to use `gmath` package, you don't have to do this conversion as ebitengine-input can make `Vec` an alias to `gmath.Vec` type.
+
+To enable this alias declaration, you need to specify the `gmath` build tag like so:
+
+```bash
+go run --tags=gmath ./mygame
+```
+
+You may also want to configure your IDE/editor to understand that `input.Vec` is an alias to `gmath.Vec`. The best way to do that is to declare the default build tags via something like `GOFLAGS`.
+
+For VSCode and VSCodium you can do the following:
+
+```json
+"go.toolsEnvVars": {
+	"GOFLAGS": "-tags=gmath",
+}
+```
+
 ### Thread Safety Notice
 
 This library never does any synchronization on its own. It's implied that you don't do a concurrent access to the input devices.
