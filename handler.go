@@ -217,6 +217,8 @@ func (h *Handler) keyIsEnabled(k Key, mask DeviceKind) bool {
 		return mask&MouseDevice != 0
 	case keyMouse:
 		return mask&MouseDevice != 0
+	case keyWheel, keyWheelWithCtrl, keyWheelWithShift, keyWheelWithCtrlShift:
+		return mask&MouseDevice != 0
 	case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick, keyGamepadStickMotion:
 		return mask&GamepadDevice != 0
 	case keyTouch, keyTouchDrag:
@@ -504,6 +506,16 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 			inpututil.IsKeyJustPressed(ebiten.Key(k.code))
 	case keyWheel:
 		return h.wheelIsJustPressed(wheelCode(k.code))
+	case keyWheelWithCtrl:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			h.wheelIsJustPressed(wheelCode(k.code))
+	case keyWheelWithShift:
+		return ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			h.wheelIsJustPressed(wheelCode(k.code))
+	case keyWheelWithCtrlShift:
+		return ebiten.IsKeyPressed(ebiten.KeyControl) &&
+			ebiten.IsKeyPressed(ebiten.KeyShift) &&
+			h.wheelIsJustPressed(wheelCode(k.code))
 	default:
 		return inpututil.IsKeyJustPressed(ebiten.Key(k.code))
 	}
@@ -527,7 +539,7 @@ func (h *Handler) getKeyPos(k Key) Vec {
 		result = h.sys.touchTapPos
 	case keyTouchDrag:
 		result = h.sys.touchDragPos
-	case keyWheel:
+	case keyWheel, keyWheelWithCtrl, keyWheelWithShift, keyWheelWithCtrlShift:
 		result = h.sys.wheel
 	case keyGamepadStickMotion:
 		axis1, axis2 := h.getStickAxes(stickCode(k.code))

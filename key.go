@@ -20,19 +20,12 @@ func (k Key) String() string {
 	ctrlMod := false
 	shiftMod := false
 	switch k.kind {
-	case keyKeyboardWithCtrlShift:
+	case keyKeyboardWithCtrlShift, keyMouseWithCtrlShift, keyWheelWithCtrlShift:
 		ctrlMod = true
 		shiftMod = true
-	case keyKeyboardWithCtrl:
+	case keyKeyboardWithCtrl, keyMouseWithCtrl, keyWheelWithCtrl:
 		ctrlMod = true
-	case keyKeyboardWithShift:
-		shiftMod = true
-	case keyMouseWithCtrlShift:
-		ctrlMod = true
-		shiftMod = true
-	case keyMouseWithCtrl:
-		ctrlMod = true
-	case keyMouseWithShift:
+	case keyKeyboardWithShift, keyMouseWithShift, keyWheelWithShift:
 		shiftMod = true
 	}
 	name := k.name
@@ -81,6 +74,17 @@ func KeyWithModifier(k Key, mod KeyModifier) Key {
 		default:
 			panic("unexpected mouse key modifier")
 		}
+	case keyWheel:
+		switch mod {
+		case ModControl:
+			k.kind = keyWheelWithCtrl
+		case ModShift:
+			k.kind = keyWheelWithShift
+		case ModControlShift:
+			k.kind = keyWheelWithCtrlShift
+		default:
+			panic("unexpected wheel key modifier")
+		}
 	default:
 		panic("only keyboard and mouse keys support modifiers")
 	}
@@ -88,9 +92,17 @@ func KeyWithModifier(k Key, mod KeyModifier) Key {
 }
 
 // Wheel keys.
+//
+// Wheel keys do not have constantly pressed state,
+// scrolling the wheel triggers JustPressed events every wheel movement.
 var (
-	KeyWheelUp       = Key{code: int(wheelUp), kind: keyWheel, name: "wheel_up"}
-	KeyWheelDown     = Key{code: int(wheelDown), kind: keyWheel, name: "wheel_down"}
+	// KeyWheelUp handles only scroll-up movement.
+	KeyWheelUp = Key{code: int(wheelUp), kind: keyWheel, name: "wheel_up"}
+
+	// KeyWheelDown handles only scroll-down movement.
+	KeyWheelDown = Key{code: int(wheelDown), kind: keyWheel, name: "wheel_down"}
+
+	// KeyWheelVertical handles both up and down movements.
 	KeyWheelVertical = Key{code: int(wheelVertical), kind: keyWheel, name: "wheel_vertical"}
 )
 

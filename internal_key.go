@@ -18,6 +18,9 @@ const (
 	keyTouch
 	keyTouchDrag
 	keyWheel
+	keyWheelWithCtrl
+	keyWheelWithShift
+	keyWheelWithCtrlShift
 	keySimulated
 )
 
@@ -82,4 +85,7 @@ var keyKindFlagTable = [256]keyKindFlag{
 	keyMouseWithCtrlShift: keyFlagHasPos,
 	keyTouch:              keyFlagHasPos,
 	keyWheel:              keyFlagHasPos,
+	keyWheelWithCtrl:      keyFlagHasPos,
+	keyWheelWithShift:     keyFlagHasPos,
+	keyWheelWithCtrlShift: keyFlagHasPos,
 }
