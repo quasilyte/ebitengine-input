@@ -103,11 +103,12 @@ func (sys *System) UpdateWithDelta(delta float64) {
 			modelName := ebiten.GamepadName(id)
 			if info.modelName != modelName {
 				info.modelName = modelName
-				if ebiten.IsStandardGamepadLayoutAvailable(id) {
+				switch {
+				case ebiten.IsStandardGamepadLayoutAvailable(id):
 					info.model = gamepadStandard
-				} else if isFirefox() {
+				case isFirefox():
 					info.model = guessFirefoxGamepadModel(int(id))
-				} else {
+				default:
 					info.model = guessGamepadModel(modelName)
 				}
 			}

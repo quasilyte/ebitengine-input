@@ -7,5 +7,6 @@ func isFirefox() bool {
 }
 
 func guessFirefoxGamepadModel(id int) gamepadModel {
+	_ = id
 	panic("should not be called")
 }

@@ -6,7 +6,7 @@ test:
 
 .PHONY: lint
 lint:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH_DIR)/bin v1.50.1
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH_DIR)/bin v1.57.2
 	$(GOPATH_DIR)/bin/golangci-lint run ./...
 	$(GOPATH_DIR)/bin/golangci-lint run --build-tags example ./_examples/basic
 	$(GOPATH_DIR)/bin/golangci-lint run --build-tags example ./_examples/configfile

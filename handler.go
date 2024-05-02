@@ -523,8 +523,7 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 
 func (h *Handler) getKeyStartPos(k Key) Vec {
 	var result Vec
-	switch k.kind {
-	case keyTouchDrag:
+	if k.kind == keyTouchDrag {
 		result = h.sys.touchStartPos
 	}
 	return result

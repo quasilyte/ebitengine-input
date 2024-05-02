@@ -67,7 +67,7 @@ func newExampleGame() *exampleGame {
 	return g
 }
 
-func (g *exampleGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (g *exampleGame) Layout(_, _ int) (int, int) {
 	return 640, 480
 }
 
