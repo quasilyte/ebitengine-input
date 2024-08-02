@@ -429,6 +429,8 @@ func (h *Handler) keyIsJustReleased(k Key) bool {
 	switch k.kind {
 	case keyMouse:
 		return inpututil.IsMouseButtonJustReleased(ebiten.MouseButton(k.code))
+	case keyMouseDrag:
+		return h.sys.mouseJustReleasedDrag
 	case keyGamepad:
 		return h.gamepadKeyIsJustReleased(k)
 	case keyMouseWithCtrl:

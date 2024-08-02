@@ -47,15 +47,16 @@ type System struct {
 	touchStartPos    Vec
 	touchTime        float64
 
-	mouseEnabled     bool
-	mouseHasDrag     bool // For "drag" event
-	mouseDragging    bool // For "drag" event
-	mouseJustHadDrag bool // For "drag" event
-	mousePressed     bool // For "drag" event
-	mouseStartPos    Vec  // For "drag" event
-	mouseDragPos     Vec  // For "drag" event
-	cursorPos        Vec
-	wheel            Vec
+	mouseEnabled          bool
+	mouseHasDrag          bool // For "drag" event
+	mouseDragging         bool // For "drag" event
+	mouseJustHadDrag      bool // For "drag" event
+	mouseJustReleasedDrag bool // For "drag" event
+	mousePressed          bool // For "drag" event
+	mouseStartPos         Vec  // For "drag" event
+	mouseDragPos          Vec  // For "drag" event
+	cursorPos             Vec
+	wheel                 Vec
 }
 
 // SystemConfig configures the input system.
@@ -183,7 +184,11 @@ func (sys *System) UpdateWithDelta(delta float64) {
 		// so let's try to make them behave as close to each other as feasible.
 		sys.mouseHasDrag = false
 		sys.mouseJustHadDrag = false
+		sys.mouseJustReleasedDrag = false
 		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+			if sys.mouseDragging {
+				sys.mouseJustReleasedDrag = true
+			}
 			sys.mouseDragging = false
 			sys.mousePressed = false
 		}
