@@ -127,7 +127,7 @@ func (h *Handler) EmitEvent(e SimulatedAction) {
 // This function is useful for "press any key" contexts where you
 // don't care which key was used to trigger the event.
 //
-// This method does respects simulated inputs.
+// This method does respect simulated inputs.
 //
 // This method does not support gamepad pseudo-keys like KeyGamepadLStickUp.
 func (h *Handler) AnyKeyJustPressed() bool {
@@ -474,6 +474,8 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 		return false
 	case keyTouchDrag:
 		return h.sys.touchJustHadDrag
+	case keyMouseDrag:
+		return h.sys.mouseJustHadDrag
 	case keyGamepad:
 		return h.gamepadKeyIsJustPressed(k)
 	case keyGamepadLeftStick:
@@ -523,8 +525,11 @@ func (h *Handler) keyIsJustPressed(k Key) bool {
 
 func (h *Handler) getKeyStartPos(k Key) Vec {
 	var result Vec
-	if k.kind == keyTouchDrag {
+	switch k.kind {
+	case keyTouchDrag:
 		result = h.sys.touchStartPos
+	case keyMouseDrag:
+		result = h.sys.mouseStartPos
 	}
 	return result
 }
@@ -538,6 +543,8 @@ func (h *Handler) getKeyPos(k Key) Vec {
 		result = h.sys.touchTapPos
 	case keyTouchDrag:
 		result = h.sys.touchDragPos
+	case keyMouseDrag:
+		result = h.sys.mouseDragPos
 	case keyWheel, keyWheelWithCtrl, keyWheelWithShift, keyWheelWithCtrlShift:
 		result = h.sys.wheel
 	case keyGamepadStickMotion:
@@ -580,6 +587,8 @@ func (h *Handler) keyIsPressed(k Key) bool {
 		return false
 	case keyTouchDrag:
 		return h.sys.touchHasDrag
+	case keyMouseDrag:
+		return h.sys.mouseHasDrag
 	case keyGamepad:
 		return h.gamepadKeyIsPressed(k)
 	case keyGamepadLeftStick:

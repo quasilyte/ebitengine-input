@@ -113,6 +113,10 @@ var (
 	KeyMouseMiddle  = Key{code: int(ebiten.MouseButtonMiddle), kind: keyMouse, name: "mouse_middle_button"}
 	KeyMouseBack    = Key{code: int(ebiten.MouseButton3), kind: keyMouse, name: "mouse_back_button"}
 	KeyMouseForward = Key{code: int(ebiten.MouseButton4), kind: keyMouse, name: "mouse_forward_button"}
+
+	// A special event that is triggered if the left mouse button is being pressed
+	// and the cursor is moved. This is useful for UI interfaces to detect drag-and-drop triggers.
+	KeyMouseLeftDrag = Key{code: int(ebiten.MouseButtonLeft), kind: keyMouseDrag, name: "mouse_left_drag"}
 )
 
 // Touch keys.

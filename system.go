@@ -47,9 +47,15 @@ type System struct {
 	touchStartPos    Vec
 	touchTime        float64
 
-	mouseEnabled bool
-	cursorPos    Vec
-	wheel        Vec
+	mouseEnabled     bool
+	mouseHasDrag     bool // For "drag" event
+	mouseDragging    bool // For "drag" event
+	mouseJustHadDrag bool // For "drag" event
+	mousePressed     bool // For "drag" event
+	mouseStartPos    Vec  // For "drag" event
+	mouseDragPos     Vec  // For "drag" event
+	cursorPos        Vec
+	wheel            Vec
 }
 
 // SystemConfig configures the input system.
@@ -170,6 +176,36 @@ func (sys *System) UpdateWithDelta(delta float64) {
 	if sys.mouseEnabled {
 		x, y := ebiten.CursorPosition()
 		sys.cursorPos = Vec{X: float64(x), Y: float64(y)}
+
+		// We copy a lot from the touch-style drag gesture.
+		// This is not mandatory as getting a cursor pos is much easier on PC.
+		// But I do value the consistency and easier cross-platform coding,
+		// so let's try to make them behave as close to each other as feasible.
+		sys.mouseHasDrag = false
+		sys.mouseJustHadDrag = false
+		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+			sys.mouseDragging = false
+			sys.mousePressed = false
+		}
+		if sys.mousePressed {
+			if sys.mouseDragging {
+				sys.mouseHasDrag = true
+				sys.mouseDragPos = sys.cursorPos
+			} else {
+				// Mouse pointer is more precise than a finger gesture,
+				// therefore we can have a lower threshold here.
+				if vecDistance(sys.mouseStartPos, sys.cursorPos) > 3 {
+					sys.mouseDragging = true
+					sys.mouseJustHadDrag = true
+					sys.mouseHasDrag = true
+					sys.mouseDragPos = sys.cursorPos
+				}
+			}
+		}
+		if !sys.mousePressed && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			sys.mouseStartPos = sys.cursorPos
+			sys.mousePressed = true
+		}
 	}
 
 	if sys.mouseEnabled || sys.touchEnabled {
