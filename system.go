@@ -199,7 +199,7 @@ func (sys *System) UpdateWithDelta(delta float64) {
 			} else {
 				// Mouse pointer is more precise than a finger gesture,
 				// therefore we can have a lower threshold here.
-				if vecDistance(sys.mouseStartPos, sys.cursorPos) > 3 {
+				if vecDistance(sys.mouseStartPos, sys.cursorPos) > 1 {
 					sys.mouseDragging = true
 					sys.mouseJustHadDrag = true
 					sys.mouseHasDrag = true
