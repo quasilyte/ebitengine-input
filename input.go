@@ -60,8 +60,8 @@ func MergeKeymaps(maps ...Keymap) Keymap {
 }
 
 // DeviceKind is used as a bit mask to select the enabled input devices.
-// See constants like KeyboardInput and GamepadInput.
-// Combine them like KeyboardInput|GamepadInput to get a bit mask that includes multiple entries.
+// See constants like KeyboardDevice and GamepadDevice.
+// Combine them like KeyboardDevice|GamepadDevice to get a bit mask that includes multiple entries.
 // Use AnyDevice if you want to have a mask covering all devices.
 type DeviceKind uint8
 

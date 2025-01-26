@@ -232,7 +232,7 @@ Another benefit of this system is that we can get a list of relevant key events 
 // Otherwise show only keyboard-related keys.
 inputDeviceMask := input.KeyboardInput
 if h.GamepadConnected() {
-    inputDeviceMask = input.GamepadInput
+    inputDeviceMask = input.GamepadDevice
 }
 keyNames := h.ActionKeyNames(ActionMoveLeft, inputDeviceMask)
 ```

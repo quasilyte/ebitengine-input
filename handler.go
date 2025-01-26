@@ -69,7 +69,7 @@ func (h *Handler) CursorPos() Vec {
 
 // DefaultInputMask returns the input mask suitable for functions like ActionKeyNames.
 //
-// If gamepad is connected, it returns GamepadInput mask.
+// If gamepad is connected, it returns GamepadDevice mask.
 // Otherwise it returns KeyboardInput+MouseInput mask.
 // This is good enough for the simplest games, but you may to implement this
 // logic inside your game if you need something more complicated.
