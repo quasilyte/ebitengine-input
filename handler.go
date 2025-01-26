@@ -20,6 +20,7 @@ type Handler struct {
 	id     uint8
 	keymap Keymap
 	sys    *System
+	last   DeviceKind
 
 	// GamepadDeadzone is the magnitude of a controller stick movements
 	// the handler can receive before registering it as an input.
@@ -255,6 +256,7 @@ func (h *Handler) JustReleasedActionInfo(action Action) (EventInfo, bool) {
 		info.hasPos = keyHasPos(k.kind)
 		info.Pos = h.getKeyPos(k)
 		info.StartPos = h.getKeyStartPos(k)
+		h.updateLastDevice(k.kind)
 		return info, true
 	}
 	return EventInfo{}, false
@@ -292,6 +294,7 @@ func (h *Handler) ActionIsJustReleased(action Action) bool {
 	}
 	for _, k := range keys {
 		if h.keyIsJustReleased(k) {
+			h.updateLastDevice(k.kind)
 			return true
 		}
 	}
@@ -321,6 +324,7 @@ func (h *Handler) JustPressedActionInfo(action Action) (EventInfo, bool) {
 		info.hasPos = keyHasPos(k.kind)
 		info.Pos = h.getKeyPos(k)
 		info.StartPos = h.getKeyStartPos(k)
+		h.updateLastDevice(k.kind)
 		return info, true
 	}
 	if h.sys.hasSimulatedActions {
@@ -358,6 +362,7 @@ func (h *Handler) PressedActionInfo(action Action) (EventInfo, bool) {
 		info.StartPos = h.getKeyStartPos(k)
 		info.hasDuration = keyHasDuration(k.kind)
 		info.Duration = h.getKeyPressDuration(k)
+		h.updateLastDevice(k.kind)
 		return info, true
 	}
 	return EventInfo{}, false
@@ -385,6 +390,7 @@ func (h *Handler) ActionIsJustPressed(action Action) bool {
 			}
 		}
 		if h.keyIsJustPressed(k) {
+			h.updateLastDevice(k.kind)
 			return true
 		}
 	}
@@ -411,6 +417,7 @@ func (h *Handler) ActionIsPressed(action Action) bool {
 			return true
 		}
 		if h.keyIsPressed(k) {
+			h.updateLastDevice(k.kind)
 			return true
 		}
 	}
@@ -421,6 +428,12 @@ func (h *Handler) ActionIsPressed(action Action) bool {
 		})
 	}
 	return false
+}
+
+// LastDevice returns a set of devices that were used to trigger the last event.
+// May be useful for swapping button prompts when the user changes device.
+func (h *Handler) LastDevice() DeviceKind {
+	return h.last
 }
 
 func (h *Handler) keyIsJustReleased(k Key) bool {
@@ -839,4 +852,8 @@ func (h *Handler) mappedGamepadKey(keyCode int) ebiten.GamepadButton {
 	default:
 		return ebiten.GamepadButton(keyCode)
 	}
+}
+
+func (h *Handler) updateLastDevice(kind keyKind) {
+	h.last = kind.device()
 }
