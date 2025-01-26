@@ -70,31 +70,39 @@ func (e EventInfo) HasDuration() bool { return e.hasDuration }
 //
 // Deprecated: Use Source().IsTouch() instead.
 func (e EventInfo) IsTouchEvent() bool {
-	return e.kind.device()&TouchDevice == 0
+	return e.Source().IsTouch()
 }
 
 // IsKeyboardEvent reports whether this event was triggered by a keyboard device.
 //
 // Deprecated: Use Source().IsKeyboard() instead.
 func (e EventInfo) IsKeyboardEvent() bool {
-	return e.kind.device()&KeyboardDevice == 0
+	return e.Source().IsKeyboard()
 }
 
 // IsMouseEvent reports whether this event was triggered by a mouse device.
 //
 // Deprecated: Use Source().IsMouse() instead.
 func (e EventInfo) IsMouseEvent() bool {
-	return e.kind.device()&MouseDevice == 0
+	return e.Source().IsMouse()
 }
 
 // IsGamepadEvent reports whether this event was triggered by a gamepad device.
 //
 // Deprecated: Use Source().IsGamepad() instead.
 func (e EventInfo) IsGamepadEvent() bool {
-	return e.kind.device()&GamepadDevice == 0
+	return e.Source().IsGamepad()
 }
 
 // Source returns the set of devices that were used to trigger the event.
+//
+// Usually, it returns a single device mask, but sometimes an action
+// can be triggered by several devices.
+// For example, a ctrl+click key would involve both keyboard and mouse devices,
+// resulting in a KeyboardDevice|KeyboardMouse value.
+//
+// A simulated event would have a zero mask returned, meaning
+// no real device was involved.
 func (e EventInfo) Source() DeviceKind {
 	return e.kind.device()
 }

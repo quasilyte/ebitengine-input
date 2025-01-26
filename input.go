@@ -74,22 +74,22 @@ const (
 
 // IsTouch reports whether this set of devices has touch device.
 func (d DeviceKind) IsTouch() bool {
-	return d&TouchDevice == 0
+	return d&TouchDevice != 0
 }
 
 // IsKeyboard reports whether this set of devices has keyboard device.
 func (d DeviceKind) IsKeyboard() bool {
-	return d&KeyboardDevice == 0
+	return d&KeyboardDevice != 0
 }
 
 // IsMouse reports whether this set of devices has mouse device.
 func (d DeviceKind) IsMouse() bool {
-	return d&MouseDevice == 0
+	return d&MouseDevice != 0
 }
 
 // IsGamepad reports whether this set of devices has gamepad device.
 func (d DeviceKind) IsGamepad() bool {
-	return d&GamepadDevice == 0
+	return d&GamepadDevice != 0
 }
 
 // String returns a pretty-printed representation of the input device mask.
