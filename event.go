@@ -67,22 +67,36 @@ func (e EventInfo) HasPos() bool { return e.hasPos }
 func (e EventInfo) HasDuration() bool { return e.hasDuration }
 
 // IsTouchEvent reports whether this event was triggered by a screen touch device.
-func (e EventInfo) IsTouchEvent() bool { return e.kind == keyTouch }
+//
+// Deprecated: Use Source().IsTouch() instead.
+func (e EventInfo) IsTouchEvent() bool {
+	return e.kind.device()&TouchDevice == 0
+}
 
 // IsKeyboardEvent reports whether this event was triggered by a keyboard device.
-func (e EventInfo) IsKeyboardEvent() bool { return e.kind == keyKeyboard }
+//
+// Deprecated: Use Source().IsKeyboard() instead.
+func (e EventInfo) IsKeyboardEvent() bool {
+	return e.kind.device()&KeyboardDevice == 0
+}
 
 // IsMouseEvent reports whether this event was triggered by a mouse device.
-func (e EventInfo) IsMouseEvent() bool { return e.kind == keyMouse }
+//
+// Deprecated: Use Source().IsMouse() instead.
+func (e EventInfo) IsMouseEvent() bool {
+	return e.kind.device()&MouseDevice == 0
+}
 
 // IsGamepadEvent reports whether this event was triggered by a gamepad device.
+//
+// Deprecated: Use Source().IsGamepad() instead.
 func (e EventInfo) IsGamepadEvent() bool {
-	switch e.kind {
-	case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick:
-		return true
-	default:
-		return false
-	}
+	return e.kind.device()&GamepadDevice == 0
+}
+
+// Source returns the set of devices that were used to trigger the event.
+func (e EventInfo) Source() DeviceKind {
+	return e.kind.device()
 }
 
 type simulatedEvent struct {

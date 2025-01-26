@@ -25,6 +25,25 @@ const (
 	keySimulated
 )
 
+func (k keyKind) device() DeviceKind {
+	switch k {
+	case keyKeyboard, keyKeyboardWithCtrl, keyKeyboardWithShift, keyKeyboardWithCtrlShift:
+		return KeyboardDevice
+	case keyGamepad, keyGamepadLeftStick, keyGamepadRightStick, keyGamepadStickMotion:
+		return GamepadDevice
+	case keyMouse, keyMouseDrag:
+		return MouseDevice
+	case keyWheel, keyWheelWithCtrl, keyWheelWithShift, keyWheelWithCtrlShift:
+		return MouseDevice
+	case keyMouseWithCtrl, keyMouseWithShift, keyMouseWithCtrlShift:
+		return MouseDevice | KeyboardDevice
+	case keyTouch, keyTouchDrag:
+		return TouchDevice
+	default:
+		return KeyboardDevice
+	}
+}
+
 type touchCode int
 
 const (
