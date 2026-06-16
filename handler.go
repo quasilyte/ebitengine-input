@@ -122,6 +122,23 @@ func (h *Handler) EmitEvent(e SimulatedAction) {
 	})
 }
 
+// AnyKeyJustReleased is like AnyKeyJustPressed, but for released key state.
+func (h *Handler) AnyKeyJustReleased() bool {
+	h.sys.keySlice = inpututil.AppendJustReleasedKeys(h.sys.keySlice[:0])
+	if len(h.sys.keySlice) != 0 {
+		return true
+	}
+
+	if len(h.sys.gamepadIDs) != 0 {
+		h.sys.gamepadKeySlice = inpututil.AppendJustReleasedGamepadButtons(ebiten.GamepadID(h.id), h.sys.gamepadKeySlice[:0])
+		if len(h.sys.gamepadKeySlice) != 0 {
+			return true
+		}
+	}
+
+	return false
+}
+
 // AnyKeyJustPressed reports whether any action key was just pressed.
 // It checks for keyboard keys, gamepad buttons and touch taps.
 //
